@@ -13,6 +13,7 @@ import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
 import { FadeIn } from '@/components/motion/fade-in';
 import { MotionButton } from '@/components/motion/motion-button';
+import { toast } from 'sonner';
 import {
   Wrench,
   Clock,
@@ -90,6 +91,10 @@ export default function ServiceDetailPage() {
   const handleBookClick = () => {
     if (!isAuthenticated) {
       router.push(`/login?redirect=/services/${serviceId}`);
+      return;
+    }
+    if (role && role !== 'customer') {
+      toast.error('Only Customer accounts can book repair services.');
       return;
     }
     setIsBookingOpen(true);
@@ -355,18 +360,38 @@ export default function ServiceDetailPage() {
                   variant="primary"
                   size="lg"
                   onClick={handleBookClick}
-                  disabled={!service.isAvailable || (!!user?.id && user.id === service.technicianId)}
+                  disabled={
+                    !service.isAvailable ||
+                    (!!user?.id && user.id === service.technicianId) ||
+                    (isAuthenticated && role !== 'customer')
+                  }
                   className="w-full text-sm font-bold shadow-md"
                 >
                   <Calendar className="w-4 h-4" />
                   <span>
-                    {user?.id && user.id === service.technicianId
+                    {!service.isAvailable
+                      ? 'Service Unavailable'
+                      : user?.id && user.id === service.technicianId
                       ? 'Your Own Service'
-                      : service.isAvailable
-                      ? 'Book This Repair'
-                      : 'Service Unavailable'}
+                      : isAuthenticated && role === 'technician'
+                      ? 'Technicians Cannot Book'
+                      : isAuthenticated && role === 'admin'
+                      ? 'Admins Cannot Book'
+                      : 'Book This Repair'}
                   </span>
                 </MotionButton>
+
+                {isAuthenticated && role !== 'customer' && (
+                  <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-800 dark:text-amber-300">
+                    <p className="font-bold flex items-center gap-1.5">
+                      <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                      Only Customers Can Book Services
+                    </p>
+                    <p className="text-[11px] mt-1 text-muted-foreground leading-relaxed">
+                      You are currently signed in as a <span className="font-semibold capitalize text-foreground">{role}</span>. Booking repair appointments is reserved exclusively for customer accounts.
+                    </p>
+                  </div>
+                )}
 
                 {/* Customer Guarantee Perks */}
                 <div className="space-y-3 pt-4 border-t border-border text-xs text-muted-foreground">

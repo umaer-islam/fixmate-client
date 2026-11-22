@@ -28,7 +28,7 @@ interface BookingModalProps {
 }
 
 export function BookingModal({ service, isOpen, onClose, onSuccess }: BookingModalProps) {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, role } = useAuth();
   const router = useRouter();
 
   // Get tomorrow as default minimum date formatted as YYYY-MM-DD
@@ -48,6 +48,12 @@ export function BookingModal({ service, isOpen, onClose, onSuccess }: BookingMod
     if (!isAuthenticated) {
       toast.error('Please log in to book this service.');
       router.push(`/login?redirect=/services/${service._id}`);
+      return;
+    }
+
+    if (role && role !== 'customer') {
+      toast.error('Only Customer accounts can book repair services.');
+      setError('Only Customer accounts can book repair services. Please sign in with a customer account.');
       return;
     }
 

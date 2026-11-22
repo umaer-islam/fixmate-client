@@ -117,7 +117,7 @@ export default function CustomerBookingDetailPage() {
 
   if (isLoading) {
     return (
-      <DashboardShell allowedRoles={['customer', 'technician', 'admin']} title="Booking Details">
+      <DashboardShell allowedRoles={['customer']} title="Booking Details">
         <div className="space-y-6">
           <Skeleton className="h-32 w-full rounded-3xl" />
           <Skeleton className="h-72 w-full rounded-3xl" />
@@ -128,7 +128,7 @@ export default function CustomerBookingDetailPage() {
 
   if (error || !booking) {
     return (
-      <DashboardShell allowedRoles={['customer', 'technician', 'admin']} title="Booking Not Found">
+      <DashboardShell allowedRoles={['customer']} title="Booking Not Found">
         <div className="bg-card rounded-3xl border border-border/80 p-8 text-center space-y-4">
           <AlertCircle className="w-12 h-12 text-[#F26A3D] mx-auto" />
           <h2 className="text-lg font-bold text-foreground">Unable to load booking</h2>
@@ -146,7 +146,7 @@ export default function CustomerBookingDetailPage() {
 
   return (
     <DashboardShell
-      allowedRoles={['customer', 'technician', 'admin']}
+      allowedRoles={['customer']}
       title={`Booking #${booking._id.slice(-6).toUpperCase()}`}
       description={`Tracking repairs for ${booking.serviceTitle}`}
       action={

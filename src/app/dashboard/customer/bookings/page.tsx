@@ -149,7 +149,7 @@ export default function CustomerBookingsPage() {
 
   return (
     <DashboardShell
-      allowedRoles={['customer', 'technician', 'admin']}
+      allowedRoles={['customer']}
       title="My Service Bookings"
       description="Track live status transitions, review estimates, cancel pending requests, or settle repair invoices."
     >

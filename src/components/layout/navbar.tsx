@@ -166,14 +166,38 @@ export function Navbar() {
                       <span>Dashboard</span>
                     </Link>
 
-                    <Link
-                      href="/dashboard/customer/bookings"
-                      onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-2 rounded-xl px-2.5 py-2 text-xs font-semibold text-foreground hover:bg-muted transition-colors"
-                    >
-                      <Calendar className="h-4 w-4 text-muted-foreground" />
-                      <span>{role === 'customer' ? 'My Bookings' : 'Booked Repairs'}</span>
-                    </Link>
+                    {role === 'customer' && (
+                      <Link
+                        href="/dashboard/customer/bookings"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-2 rounded-xl px-2.5 py-2 text-xs font-semibold text-foreground hover:bg-muted transition-colors"
+                      >
+                        <Calendar className="h-4 w-4 text-muted-foreground" />
+                        <span>My Bookings</span>
+                      </Link>
+                    )}
+
+                    {role === 'technician' && (
+                      <Link
+                        href="/dashboard/technician/requests"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-2 rounded-xl px-2.5 py-2 text-xs font-semibold text-foreground hover:bg-muted transition-colors"
+                      >
+                        <Calendar className="h-4 w-4 text-muted-foreground" />
+                        <span>Job Queue</span>
+                      </Link>
+                    )}
+
+                    {role === 'admin' && (
+                      <Link
+                        href="/dashboard/admin/bookings"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-2 rounded-xl px-2.5 py-2 text-xs font-semibold text-foreground hover:bg-muted transition-colors"
+                      >
+                        <Calendar className="h-4 w-4 text-muted-foreground" />
+                        <span>All Bookings</span>
+                      </Link>
+                    )}
 
                     {role === 'technician' && (
                       <Link

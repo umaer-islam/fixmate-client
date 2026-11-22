@@ -55,7 +55,6 @@ export function DashboardShell({
     { label: 'Job Queue', href: '/dashboard/technician/requests', icon: Calendar },
     { label: 'My Services', href: '/dashboard/technician/my-services', icon: Wrench },
     { label: 'Add New Service', href: '/dashboard/technician/add-service', icon: PlusCircle },
-    { label: 'Booked Repairs', href: '/dashboard/customer/bookings', icon: Calendar },
     { label: 'Profile & Details', href: '/dashboard/profile', icon: User },
   ];
 
@@ -64,7 +63,6 @@ export function DashboardShell({
     { label: 'Moderate Services', href: '/dashboard/admin/services', icon: Layers },
     { label: 'User Directory', href: '/dashboard/admin/users', icon: Users },
     { label: 'All Bookings', href: '/dashboard/admin/bookings', icon: Calendar },
-    { label: 'Booked Repairs', href: '/dashboard/customer/bookings', icon: Calendar },
     { label: 'Transactions', href: '/dashboard/admin/transactions', icon: DollarSign },
     { label: 'Admin Profile', href: '/dashboard/profile', icon: User },
   ];

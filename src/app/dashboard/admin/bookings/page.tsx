@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'motion/react';
 import { api } from '@/lib/api-client';
 import { DashboardShell } from '@/components/dashboard/dashboard-shell';
 import { Badge } from '@/components/ui/badge';
@@ -15,6 +16,7 @@ import {
   Wrench,
   User,
   ArrowRight,
+  DollarSign,
 } from 'lucide-react';
 
 interface AdminBooking {
@@ -100,6 +102,8 @@ export default function AdminBookingsPage() {
     }
   };
 
+  const statusFilters = ['all', 'requested', 'accepted', 'in-progress', 'completed', 'cancelled'];
+
   return (
     <DashboardShell
       allowedRoles={['admin']}
@@ -107,104 +111,135 @@ export default function AdminBookingsPage() {
       description="Supervise repair orders across all technicians and customers. Inspect lifecycle stages and payment reconciliation."
     >
       {/* Filters Bar */}
-      <div className="bg-white rounded-2xl border border-graphite/10 p-4 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="bg-card rounded-3xl border border-border/80 p-4 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-1.5 flex-wrap w-full sm:w-auto">
-          {['all', 'requested', 'accepted', 'in-progress', 'completed', 'cancelled'].map((st) => (
-            <button
-              key={st}
-              onClick={() => setStatusFilter(st)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all capitalize ${
-                statusFilter === st
-                  ? 'bg-graphite text-white shadow-xs'
-                  : 'bg-ivory text-graphite/70 hover:bg-white hover:text-graphite'
-              }`}
-            >
-              {st} ({bookings.filter((b) => (st === 'all' ? true : b.status === st)).length})
-            </button>
-          ))}
+          {statusFilters.map((st) => {
+            const count = bookings.filter((b) => (st === 'all' ? true : b.status === st)).length;
+            const isActive = statusFilter === st;
+            return (
+              <button
+                key={st}
+                onClick={() => setStatusFilter(st)}
+                className={`relative px-3 py-1.5 rounded-xl text-xs font-bold transition-all capitalize flex items-center gap-1.5 ${
+                  isActive
+                    ? 'text-white'
+                    : 'text-muted-foreground hover:text-foreground bg-muted/60 hover:bg-muted'
+                }`}
+              >
+                {isActive && (
+                  <motion.div
+                    layoutId="admin-bookings-filter-pill"
+                    className="absolute inset-0 bg-[#202522] rounded-xl shadow-xs"
+                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10">{st}</span>
+                <span
+                  className={`relative z-10 text-[10px] px-1.5 py-0.5 rounded-full font-mono font-bold ${
+                    isActive ? 'bg-white/20 text-white' : 'bg-background/80 text-muted-foreground'
+                  }`}
+                >
+                  {count}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
         <div className="relative w-full sm:w-72">
-          <Search className="w-4 h-4 text-graphite/40 absolute left-3 top-2.5" />
+          <Search className="w-4 h-4 text-muted-foreground absolute left-3 top-2.5" />
           <input
             type="text"
             placeholder="Search booking, user, or service..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 border border-graphite/10 rounded-xl text-xs text-graphite focus:outline-none focus:ring-2 focus:ring-repair-orange/30 focus:border-repair-orange"
+            className="w-full pl-9 pr-3 py-2 border border-border rounded-xl text-xs text-foreground bg-background focus:outline-none focus:ring-2 focus:ring-[#F26A3D]/30 focus:border-[#F26A3D]"
           />
         </div>
       </div>
 
       {/* Bookings List */}
-      <div className="bg-white rounded-2xl border border-graphite/10 shadow-xs overflow-hidden">
+      <div className="bg-card rounded-3xl border border-border/80 shadow-xs overflow-hidden">
         {isLoading ? (
           <div className="p-6 space-y-4">
-            <Skeleton className="h-20 w-full rounded-xl" />
-            <Skeleton className="h-20 w-full rounded-xl" />
+            <Skeleton className="h-20 w-full rounded-2xl" />
+            <Skeleton className="h-20 w-full rounded-2xl" />
           </div>
         ) : filtered.length === 0 ? (
           <div className="p-12 text-center space-y-3">
-            <Calendar className="w-12 h-12 text-graphite-light mx-auto" />
-            <h3 className="font-bold text-graphite text-base">No Bookings Found</h3>
-            <p className="text-xs text-graphite-light">No records match your filter criteria.</p>
+            <div className="w-14 h-14 rounded-2xl bg-muted/70 flex items-center justify-center mx-auto text-muted-foreground">
+              <Calendar className="w-7 h-7" />
+            </div>
+            <h3 className="font-bold text-foreground text-base">No Bookings Found</h3>
+            <p className="text-xs text-muted-foreground">No records match your filter criteria.</p>
           </div>
         ) : (
-          <div className="divide-y divide-graphite/10">
-            {filtered.map((b) => (
-              <div
-                key={b._id}
-                className="p-5 hover:bg-ivory/50 transition-colors flex flex-col lg:flex-row lg:items-center justify-between gap-4"
-              >
-                <div className="space-y-1 flex-1">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-mono text-xs font-bold text-graphite">
-                      #{b._id.slice(-6).toUpperCase()}
-                    </span>
-                    <span>•</span>
-                    <span className="text-xs text-repair-orange font-bold uppercase">{b.serviceCategory}</span>
-                    <span>•</span>
-                    {getStatusBadge(b.status)}
-                    <Badge
-                      variant={b.paymentStatus === 'paid' ? 'success' : 'warning'}
-                      className="text-[10px] uppercase font-bold"
+          <div className="divide-y divide-border/70">
+            <AnimatePresence mode="popLayout">
+              {filtered.map((b) => (
+                <motion.div
+                  key={b._id}
+                  layout
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="p-5 hover:bg-muted/30 transition-colors flex flex-col lg:flex-row lg:items-center justify-between gap-4"
+                >
+                  <div className="space-y-1 flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-mono text-xs font-bold text-foreground">
+                        #{b._id.slice(-6).toUpperCase()}
+                      </span>
+                      <span className="text-border">•</span>
+                      <span className="text-xs text-[#F26A3D] font-bold uppercase tracking-wider">
+                        {b.serviceCategory}
+                      </span>
+                      <span className="text-border">•</span>
+                      {getStatusBadge(b.status)}
+                      <Badge
+                        variant={b.paymentStatus === 'paid' ? 'success' : 'warning'}
+                        className="text-[10px] uppercase font-bold"
+                      >
+                        {b.paymentStatus}
+                      </Badge>
+                    </div>
+
+                    <h3 className="font-extrabold text-[#202522] text-sm tracking-tight">{b.serviceTitle}</h3>
+
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap pt-0.5">
+                      <span>
+                        Customer: <strong className="text-foreground">{b.customerName || b.customerPhone}</strong>
+                      </span>
+                      <span className="text-border">•</span>
+                      <span>
+                        Technician: <strong className="text-foreground">{b.technicianName || 'Assigned Pro'}</strong>
+                      </span>
+                      <span className="text-border">•</span>
+                      <span>Preferred Date: {new Date(b.preferredDate).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4 self-end lg:self-center shrink-0">
+                    <div className="text-right">
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">
+                        Invoice Amount
+                      </span>
+                      <span className="text-lg font-black text-[#202522] font-mono">
+                        ${((b.finalAmount ?? b.basePrice) || 0).toFixed(2)}
+                      </span>
+                    </div>
+
+                    <Link
+                      href={`/dashboard/customer/bookings/${b._id}`}
+                      className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                      title="Inspect Details"
                     >
-                      {b.paymentStatus}
-                    </Badge>
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
                   </div>
-
-                  <h3 className="font-extrabold text-graphite text-sm">{b.serviceTitle}</h3>
-
-                  <div className="flex items-center gap-4 text-xs text-graphite-light flex-wrap pt-0.5">
-                    <span>
-                      Customer: <strong>{b.customerName || b.customerPhone}</strong>
-                    </span>
-                    <span>•</span>
-                    <span>
-                      Technician: <strong>{b.technicianName || 'Assigned Pro'}</strong>
-                    </span>
-                    <span>•</span>
-                    <span>Preferred Date: {new Date(b.preferredDate).toLocaleDateString()}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4 self-end lg:self-center">
-                  <div className="text-right">
-                    <span className="text-xs text-graphite-light block">Invoice Amount</span>
-                    <span className="text-base font-black text-graphite">
-                      ${((b.finalAmount ?? b.basePrice) || 0).toFixed(2)}
-                    </span>
-                  </div>
-
-                  <Link
-                    href={`/dashboard/customer/bookings/${b._id}`}
-                    className="p-2 rounded-lg text-graphite/50 hover:text-graphite hover:bg-white transition-colors"
-                  >
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </div>
-              </div>
-            ))}
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </div>
         )}
       </div>

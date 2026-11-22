@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { motion } from 'motion/react';
 import { api } from '@/lib/api-client';
 import { DashboardShell } from '@/components/dashboard/dashboard-shell';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
 import { StatCard } from '@/components/dashboard/stat-card';
+import { SpotlightCard } from '@/components/motion/spotlight-card';
+import { MotionButton } from '@/components/motion/motion-button';
 import {
   Users,
   Wrench,
@@ -18,6 +19,8 @@ import {
   ArrowRight,
   Layers,
   AlertCircle,
+  FileText,
+  Sparkles,
 } from 'lucide-react';
 
 interface AdminStats {
@@ -65,12 +68,11 @@ export default function AdminOverviewPage() {
       title="Platform Operations Console"
       description="Executive metrics across user registries, catalog moderation, bookings throughput, and Stripe financial settlement."
       action={
-        <Link
-          href="/dashboard/admin/services"
-          className="inline-flex items-center gap-1.5 px-4 py-2 bg-repair-orange hover:bg-repair-orange-dark text-white rounded-xl text-xs font-bold transition-colors shadow-xs"
-        >
-          <Layers className="w-4 h-4" />
-          <span>Review Services Queue</span>
+        <Link href="/dashboard/admin/services">
+          <MotionButton variant="primary" size="sm">
+            <Layers className="w-4 h-4" />
+            <span>Review Services Queue</span>
+          </MotionButton>
         </Link>
       }
     >
@@ -111,63 +113,60 @@ export default function AdminOverviewPage() {
         />
       </div>
 
-      {/* Navigation Quick Panels */}
+      {/* Navigation Quick Panels with Spotlight Sheen */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <Link
-          href="/dashboard/admin/services"
-          className="bg-white rounded-2xl border border-graphite/10 p-6 shadow-xs hover:border-repair-orange transition-all group"
-        >
-          <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600 mb-4 group-hover:scale-110 transition-transform">
-            <Layers className="w-5 h-5" />
-          </div>
-          <h3 className="font-extrabold text-graphite text-base group-hover:text-repair-orange transition-colors">
-            Service Moderation
-          </h3>
-          <p className="text-xs text-graphite-light mt-1 leading-relaxed">
-            Review submitted technician services. Approve compliant repair offerings or return them with notes.
-          </p>
-          <div className="mt-4 flex items-center gap-1 text-xs font-bold text-repair-orange">
-            <span>Moderate Catalog</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </div>
+        <Link href="/dashboard/admin/services" className="block">
+          <SpotlightCard className="h-full p-6 space-y-3 group cursor-pointer">
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-600 mb-2 group-hover:scale-105 transition-transform">
+              <Layers className="w-6 h-6" />
+            </div>
+            <h3 className="font-extrabold text-[#202522] text-base group-hover:text-[#F26A3D] transition-colors tracking-tight">
+              Service Moderation
+            </h3>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Review submitted technician services. Approve compliant repair offerings or return them with actionable feedback.
+            </p>
+            <div className="pt-2 flex items-center gap-1.5 text-xs font-bold text-[#F26A3D]">
+              <span>Moderate Catalog</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </SpotlightCard>
         </Link>
 
-        <Link
-          href="/dashboard/admin/users"
-          className="bg-white rounded-2xl border border-graphite/10 p-6 shadow-xs hover:border-repair-orange transition-all group"
-        >
-          <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-600 mb-4 group-hover:scale-110 transition-transform">
-            <Users className="w-5 h-5" />
-          </div>
-          <h3 className="font-extrabold text-graphite text-base group-hover:text-repair-orange transition-colors">
-            User Directory & Roles
-          </h3>
-          <p className="text-xs text-graphite-light mt-1 leading-relaxed">
-            Inspect all registered accounts. Upgrade verified members to technician status or designate admin privileges.
-          </p>
-          <div className="mt-4 flex items-center gap-1 text-xs font-bold text-repair-orange">
-            <span>Manage Users</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </div>
+        <Link href="/dashboard/admin/users" className="block">
+          <SpotlightCard className="h-full p-6 space-y-3 group cursor-pointer">
+            <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-600 mb-2 group-hover:scale-105 transition-transform">
+              <Users className="w-6 h-6" />
+            </div>
+            <h3 className="font-extrabold text-[#202522] text-base group-hover:text-[#F26A3D] transition-colors tracking-tight">
+              User Directory & Roles
+            </h3>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Inspect all registered accounts. Upgrade verified members to technician status or designate admin privileges.
+            </p>
+            <div className="pt-2 flex items-center gap-1.5 text-xs font-bold text-[#F26A3D]">
+              <span>Manage Users</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </SpotlightCard>
         </Link>
 
-        <Link
-          href="/dashboard/admin/payments"
-          className="bg-white rounded-2xl border border-graphite/10 p-6 shadow-xs hover:border-repair-orange transition-all group"
-        >
-          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 mb-4 group-hover:scale-110 transition-transform">
-            <DollarSign className="w-5 h-5" />
-          </div>
-          <h3 className="font-extrabold text-graphite text-base group-hover:text-repair-orange transition-colors">
-            Financial Audit Logs
-          </h3>
-          <p className="text-xs text-graphite-light mt-1 leading-relaxed">
-            Inspect Stripe payment intents, completed checkout sessions, customer billing records, and transactions.
-          </p>
-          <div className="mt-4 flex items-center gap-1 text-xs font-bold text-repair-orange">
-            <span>View Payments</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </div>
+        <Link href="/dashboard/admin/payments" className="block">
+          <SpotlightCard className="h-full p-6 space-y-3 group cursor-pointer">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 mb-2 group-hover:scale-105 transition-transform">
+              <DollarSign className="w-6 h-6" />
+            </div>
+            <h3 className="font-extrabold text-[#202522] text-base group-hover:text-[#F26A3D] transition-colors tracking-tight">
+              Financial Audit Logs
+            </h3>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Inspect Stripe payment intents, completed checkout sessions, customer billing records, and audit receipts.
+            </p>
+            <div className="pt-2 flex items-center gap-1.5 text-xs font-bold text-[#F26A3D]">
+              <span>View Payments</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </SpotlightCard>
         </Link>
       </div>
     </DashboardShell>

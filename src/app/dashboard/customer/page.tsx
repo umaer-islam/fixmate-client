@@ -2,12 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'motion/react';
 import { api } from '@/lib/api-client';
 import { useAuth } from '@/providers/auth-provider';
 import { DashboardShell } from '@/components/dashboard/dashboard-shell';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { StatCard } from '@/components/dashboard/stat-card';
+import { MotionButton } from '@/components/motion/motion-button';
 import {
   Calendar,
   Clock,
@@ -17,6 +19,7 @@ import {
   AlertCircle,
   Wrench,
   ChevronRight,
+  Sparkles,
 } from 'lucide-react';
 
 interface Booking {
@@ -94,12 +97,11 @@ export default function CustomerDashboardPage() {
       title={`Welcome back, ${user?.name || 'Customer'}`}
       description="Manage your ongoing device repairs, track technician schedules, and review receipts."
       action={
-        <Link
-          href="/services"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-repair-orange hover:bg-repair-orange-dark text-white rounded-lg text-sm font-semibold transition-colors shadow-xs"
-        >
-          <Wrench className="w-4 h-4" />
-          <span>Book New Repair</span>
+        <Link href="/services">
+          <MotionButton variant="primary" size="sm">
+            <Wrench className="w-4 h-4" />
+            <span>Book New Repair</span>
+          </MotionButton>
         </Link>
       }
     >
@@ -132,74 +134,75 @@ export default function CustomerDashboardPage() {
       </div>
 
       {/* Recent Repairs Table / Card */}
-      <div className="bg-white rounded-2xl border border-graphite/10 shadow-xs overflow-hidden">
-        <div className="p-5 border-b border-graphite/10 flex items-center justify-between">
+      <div className="bg-card rounded-3xl border border-border/80 shadow-xs overflow-hidden">
+        <div className="p-5 sm:p-6 border-b border-border/70 flex items-center justify-between">
           <div>
-            <h2 className="font-bold text-graphite text-base">Recent Repair Requests</h2>
-            <p className="text-xs text-graphite-light mt-0.5">Your latest service orders and statuses</p>
+            <h2 className="font-extrabold text-[#202522] text-base tracking-tight">Recent Repair Requests</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">Your latest service orders and live statuses</p>
           </div>
           <Link
             href="/dashboard/customer/bookings"
-            className="text-xs font-bold text-repair-orange hover:text-repair-orange-dark flex items-center gap-1 transition-colors"
+            className="text-xs font-bold text-[#F26A3D] hover:text-[#F26A3D]/80 flex items-center gap-1 transition-colors group"
           >
             <span>View All ({bookings.length})</span>
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
           </Link>
         </div>
 
         {isLoading ? (
           <div className="p-6 space-y-4">
-            <Skeleton className="h-16 w-full rounded-xl" />
-            <Skeleton className="h-16 w-full rounded-xl" />
-            <Skeleton className="h-16 w-full rounded-xl" />
+            <Skeleton className="h-16 w-full rounded-2xl" />
+            <Skeleton className="h-16 w-full rounded-2xl" />
+            <Skeleton className="h-16 w-full rounded-2xl" />
           </div>
         ) : bookings.length === 0 ? (
           <div className="p-12 text-center space-y-4">
-            <div className="w-16 h-16 rounded-full bg-ivory flex items-center justify-center mx-auto text-graphite-light">
+            <div className="w-16 h-16 rounded-2xl bg-muted/70 flex items-center justify-center mx-auto text-muted-foreground">
               <Calendar className="w-8 h-8" />
             </div>
             <div>
-              <h3 className="font-bold text-graphite text-base">No Repair Requests Yet</h3>
-              <p className="text-xs text-graphite-light max-w-sm mx-auto mt-1">
+              <h3 className="font-bold text-foreground text-base">No Repair Requests Yet</h3>
+              <p className="text-xs text-muted-foreground max-w-sm mx-auto mt-1 leading-relaxed">
                 You haven&apos;t booked any repair services yet. Find a certified technician to fix your device today.
               </p>
             </div>
-            <Link
-              href="/services"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-repair-orange hover:bg-repair-orange-dark text-white rounded-xl text-xs font-bold transition-colors"
-            >
-              <Wrench className="w-4 h-4" />
-              <span>Browse Catalog</span>
+            <Link href="/services" className="inline-block pt-1">
+              <MotionButton variant="primary" size="sm">
+                <Wrench className="w-4 h-4" />
+                <span>Browse Catalog</span>
+              </MotionButton>
             </Link>
           </div>
         ) : (
-          <div className="divide-y divide-graphite/10">
+          <div className="divide-y divide-border/70">
             {bookings.slice(0, 5).map((booking) => (
-              <div
+              <motion.div
                 key={booking._id}
-                className="p-5 hover:bg-ivory/50 transition-colors flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+                whileHover={{ backgroundColor: 'rgba(245, 243, 238, 0.4)' }}
+                className="p-5 transition-colors flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-ivory border border-graphite/10 flex items-center justify-center overflow-hidden flex-shrink-0">
+                  <div className="w-14 h-14 rounded-2xl bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
                     {booking.serviceImage ? (
+                      // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={booking.serviceImage}
                         alt={booking.serviceTitle}
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <Wrench className="w-5 h-5 text-graphite/40" />
+                      <Wrench className="w-6 h-6 text-muted-foreground" />
                     )}
                   </div>
-                  <div>
-                    <h3 className="font-bold text-graphite text-sm hover:text-repair-orange transition-colors">
+                  <div className="space-y-0.5">
+                    <h3 className="font-extrabold text-[#202522] text-sm tracking-tight hover:text-[#F26A3D] transition-colors">
                       <Link href={`/dashboard/customer/bookings/${booking._id}`}>
                         {booking.serviceTitle}
                       </Link>
                     </h3>
-                    <div className="flex items-center gap-2 mt-1 text-xs text-graphite-light">
-                      <span>{booking.serviceCategory}</span>
-                      <span>•</span>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <span className="font-medium">{booking.serviceCategory}</span>
+                      <span className="text-border">•</span>
                       <span>
                         Preferred: {new Date(booking.preferredDate).toLocaleDateString()}
                       </span>
@@ -207,12 +210,12 @@ export default function CustomerDashboardPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 self-end sm:self-center">
+                <div className="flex items-center gap-4 self-end sm:self-center shrink-0">
                   <div className="text-right">
-                    <span className="font-bold text-graphite text-sm block">
+                    <span className="font-black text-[#202522] text-base font-mono block">
                       ${((booking.finalAmount ?? booking.basePrice) || 0).toFixed(2)}
                     </span>
-                    <span className="text-[11px] text-graphite-light capitalize">
+                    <span className="text-[11px] text-muted-foreground capitalize font-medium">
                       {booking.paymentStatus}
                     </span>
                   </div>
@@ -221,12 +224,12 @@ export default function CustomerDashboardPage() {
 
                   <Link
                     href={`/dashboard/customer/bookings/${booking._id}`}
-                    className="p-2 rounded-lg text-graphite/50 hover:text-graphite hover:bg-white transition-colors"
+                    className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                   >
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         )}

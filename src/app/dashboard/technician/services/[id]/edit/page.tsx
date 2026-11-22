@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { api } from '@/lib/api-client';
 import { DashboardShell } from '@/components/dashboard/dashboard-shell';
 import { Skeleton } from '@/components/ui/skeleton';
+import { MotionButton } from '@/components/motion/motion-button';
+import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import {
   Wrench,
@@ -15,6 +17,8 @@ import {
   Loader2,
   AlertCircle,
   Camera,
+  Eye,
+  Clock,
 } from 'lucide-react';
 
 const CATEGORIES = [
@@ -25,6 +29,12 @@ const CATEGORIES = [
   'TV',
   'Washing Machine',
   'Electrical',
+];
+
+const SERVICE_MODES = [
+  { value: 'onsite', label: 'Home / On-site Visit' },
+  { value: 'remote', label: 'Shop Drop-off / Remote' },
+  { value: 'both', label: 'Both (On-site & Drop-off)' },
 ];
 
 export default function EditServicePage() {
@@ -38,7 +48,7 @@ export default function EditServicePage() {
   const [image, setImage] = useState('');
   const [basePrice, setBasePrice] = useState('');
   const [estimatedDuration, setEstimatedDuration] = useState('');
-  const [serviceMode, setServiceMode] = useState<string>('Home Visit');
+  const [serviceMode, setServiceMode] = useState<string>('onsite');
   const [serviceArea, setServiceArea] = useState('');
   const [turnaroundTime, setTurnaroundTime] = useState('');
 
@@ -158,7 +168,7 @@ export default function EditServicePage() {
   if (isLoading) {
     return (
       <DashboardShell allowedRoles={['technician', 'admin']} title="Edit Service">
-        <Skeleton className="h-96 w-full rounded-2xl" />
+        <Skeleton className="h-96 w-full rounded-3xl" />
       </DashboardShell>
     );
   }
@@ -171,221 +181,276 @@ export default function EditServicePage() {
       action={
         <Link
           href="/dashboard/technician/services"
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-graphite/70 hover:text-graphite bg-white border border-graphite/10 rounded-lg transition-colors"
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-muted-foreground hover:text-foreground bg-card border border-border rounded-xl transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to Catalog</span>
         </Link>
       }
     >
-      <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-graphite/10 p-6 sm:p-8 shadow-xs space-y-6">
-        {error && (
-          <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 flex-shrink-0" />
-            <span>{error}</span>
-          </div>
-        )}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <form
+          onSubmit={handleSubmit}
+          className="lg:col-span-2 bg-card rounded-3xl border border-border/80 p-6 sm:p-8 shadow-xs space-y-6"
+        >
+          {error && (
+            <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-2xl text-xs flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
 
-        <div className="space-y-4">
-          <h3 className="font-extrabold text-graphite text-sm">Service Details</h3>
+          <div className="space-y-4">
+            <h3 className="font-extrabold text-[#202522] text-sm tracking-tight">Service Details</h3>
 
-          <div>
-            <label className="block text-xs font-bold text-graphite uppercase tracking-wider mb-1">
-              Service Title <span className="text-repair-orange">*</span>
-            </label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-              className="w-full px-3.5 py-2.5 border border-graphite/20 rounded-xl text-sm text-graphite focus:outline-none focus:ring-2 focus:ring-repair-orange/30 focus:border-repair-orange"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-bold text-graphite uppercase tracking-wider mb-1">
-                Category <span className="text-repair-orange">*</span>
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                Service Title <span className="text-[#F26A3D]">*</span>
               </label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-3.5 py-2.5 border border-graphite/20 rounded-xl text-sm text-graphite bg-white focus:outline-none focus:ring-2 focus:ring-repair-orange/30 focus:border-repair-orange"
-              >
-                {CATEGORIES.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </select>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+                className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm text-foreground bg-background focus:outline-none focus:ring-2 focus:ring-[#F26A3D]/30 focus:border-[#F26A3D]"
+              />
             </div>
 
-            <div>
-              <label className="block text-xs font-bold text-graphite uppercase tracking-wider mb-1">
-                Service Mode <span className="text-repair-orange">*</span>
-              </label>
-              <select
-                value={serviceMode}
-                onChange={(e) => setServiceMode(e.target.value)}
-                className="w-full px-3.5 py-2.5 border border-graphite/20 rounded-xl text-sm text-graphite bg-white focus:outline-none focus:ring-2 focus:ring-repair-orange/30 focus:border-repair-orange"
-              >
-                <option value="Home Visit">Home Visit</option>
-                <option value="Shop Drop-off">Shop Drop-off</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-xs font-bold text-graphite uppercase tracking-wider mb-1">
-              Description & Scope <span className="text-repair-orange">*</span>
-            </label>
-            <textarea
-              rows={4}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-              className="w-full px-3.5 py-2.5 border border-graphite/20 rounded-xl text-sm text-graphite focus:outline-none focus:ring-2 focus:ring-repair-orange/30 focus:border-repair-orange"
-            />
-          </div>
-        </div>
-
-        {/* Banner Image */}
-        <div className="space-y-3 pt-4 border-t border-graphite/10">
-          <h3 className="font-extrabold text-graphite text-sm">Banner Image</h3>
-
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-            <div className="w-32 h-24 rounded-xl bg-ivory border border-graphite/10 overflow-hidden flex items-center justify-center flex-shrink-0">
-              {image ? (
-                <img src={image} alt="Preview" className="w-full h-full object-cover" />
-              ) : (
-                <Camera className="w-8 h-8 text-graphite/30" />
-              )}
-            </div>
-
-            <div className="flex-1 space-y-2">
-              <div className="flex items-center gap-3">
-                <label
-                  htmlFor="service-image-file"
-                  className="px-4 py-2 bg-ivory hover:bg-white text-graphite border border-graphite/20 rounded-xl text-xs font-bold cursor-pointer transition-colors flex items-center gap-2"
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                  Category <span className="text-[#F26A3D]">*</span>
+                </label>
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm text-foreground bg-background focus:outline-none focus:ring-2 focus:ring-[#F26A3D]/30 focus:border-[#F26A3D]"
                 >
-                  {isUploading ? (
-                    <Loader2 className="w-4 h-4 animate-spin text-repair-orange" />
-                  ) : (
-                    <UploadCloud className="w-4 h-4 text-repair-orange" />
-                  )}
-                  <span>Upload Image File</span>
+                  {CATEGORIES.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                  Service Mode <span className="text-[#F26A3D]">*</span>
+                </label>
+                <select
+                  value={serviceMode}
+                  onChange={(e) => setServiceMode(e.target.value)}
+                  className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm text-foreground bg-background focus:outline-none focus:ring-2 focus:ring-[#F26A3D]/30 focus:border-[#F26A3D]"
+                >
+                  {SERVICE_MODES.map((mode) => (
+                    <option key={mode.value} value={mode.value}>
+                      {mode.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                Description & Scope <span className="text-[#F26A3D]">*</span>
+              </label>
+              <textarea
+                rows={4}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+                className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm text-foreground bg-background focus:outline-none focus:ring-2 focus:ring-[#F26A3D]/30 focus:border-[#F26A3D]"
+              />
+            </div>
+          </div>
+
+          {/* Image Banner */}
+          <div className="space-y-3 pt-4 border-t border-border/70">
+            <h3 className="font-extrabold text-[#202522] text-sm tracking-tight">Banner Image</h3>
+
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+              <div className="w-32 h-24 rounded-2xl bg-muted border border-border overflow-hidden flex items-center justify-center shrink-0 shadow-2xs">
+                {image ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={image} alt="Preview" className="w-full h-full object-cover" />
+                ) : (
+                  <Camera className="w-8 h-8 text-muted-foreground" />
+                )}
+              </div>
+
+              <div className="flex-1 space-y-2">
+                <div className="flex items-center gap-3">
+                  <label
+                    htmlFor="service-image-file"
+                    className="px-4 py-2 bg-muted hover:bg-muted/80 text-foreground border border-border rounded-xl text-xs font-bold cursor-pointer transition-colors flex items-center gap-2"
+                  >
+                    {isUploading ? (
+                      <Loader2 className="w-4 h-4 animate-spin text-[#F26A3D]" />
+                    ) : (
+                      <UploadCloud className="w-4 h-4 text-[#F26A3D]" />
+                    )}
+                    <span>Upload New Image</span>
+                  </label>
+                  <input
+                    id="service-image-file"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageFile}
+                    disabled={isUploading}
+                  />
+                  <span className="text-xs text-muted-foreground">or update image URL below</span>
+                </div>
+
+                <input
+                  type="url"
+                  value={image}
+                  onChange={(e) => setImage(e.target.value)}
+                  required
+                  className="w-full px-3.5 py-2 border border-border rounded-xl text-xs text-foreground bg-background focus:outline-none focus:ring-2 focus:ring-[#F26A3D]/30 focus:border-[#F26A3D]"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Pricing & Duration */}
+          <div className="space-y-4 pt-4 border-t border-border/70">
+            <h3 className="font-extrabold text-[#202522] text-sm tracking-tight">Pricing & SLA</h3>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                  Base Price ($ USD) <span className="text-[#F26A3D]">*</span>
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3.5 top-2.5 text-muted-foreground font-bold text-sm">$</span>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={basePrice}
+                    onChange={(e) => setBasePrice(e.target.value)}
+                    required
+                    className="w-full pl-8 pr-3.5 py-2.5 border border-border rounded-xl text-sm font-bold text-foreground bg-background focus:outline-none focus:ring-2 focus:ring-[#F26A3D]/30 focus:border-[#F26A3D]"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                  Estimated Duration <span className="text-[#F26A3D]">*</span>
                 </label>
                 <input
-                  id="service-image-file"
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleImageFile}
-                  disabled={isUploading}
-                />
-                <span className="text-xs text-graphite-light">or update URL below</span>
-              </div>
-
-              <input
-                type="url"
-                value={image}
-                onChange={(e) => setImage(e.target.value)}
-                required
-                className="w-full px-3.5 py-2 border border-graphite/20 rounded-xl text-xs text-graphite focus:outline-none focus:ring-2 focus:ring-repair-orange/30 focus:border-repair-orange"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Pricing & Duration */}
-        <div className="space-y-4 pt-4 border-t border-graphite/10">
-          <h3 className="font-extrabold text-graphite text-sm">Pricing & Service SLA</h3>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-bold text-graphite uppercase tracking-wider mb-1">
-                Base Price ($ USD) <span className="text-repair-orange">*</span>
-              </label>
-              <div className="relative">
-                <span className="absolute left-3.5 top-2.5 text-graphite/50 font-bold text-sm">$</span>
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={basePrice}
-                  onChange={(e) => setBasePrice(e.target.value)}
+                  type="text"
+                  value={estimatedDuration}
+                  onChange={(e) => setEstimatedDuration(e.target.value)}
                   required
-                  className="w-full pl-8 pr-3.5 py-2.5 border border-graphite/20 rounded-xl text-sm font-bold text-graphite focus:outline-none focus:ring-2 focus:ring-repair-orange/30 focus:border-repair-orange"
+                  className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm text-foreground bg-background focus:outline-none focus:ring-2 focus:ring-[#F26A3D]/30 focus:border-[#F26A3D]"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                  Service Area
+                </label>
+                <input
+                  type="text"
+                  value={serviceArea}
+                  onChange={(e) => setServiceArea(e.target.value)}
+                  className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm text-foreground bg-background focus:outline-none focus:ring-2 focus:ring-[#F26A3D]/30 focus:border-[#F26A3D]"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                  Turnaround Time
+                </label>
+                <input
+                  type="text"
+                  value={turnaroundTime}
+                  onChange={(e) => setTurnaroundTime(e.target.value)}
+                  className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm text-foreground bg-background focus:outline-none focus:ring-2 focus:ring-[#F26A3D]/30 focus:border-[#F26A3D]"
                 />
               </div>
             </div>
+          </div>
 
-            <div>
-              <label className="block text-xs font-bold text-graphite uppercase tracking-wider mb-1">
-                Estimated Duration <span className="text-repair-orange">*</span>
-              </label>
-              <input
-                type="text"
-                value={estimatedDuration}
-                onChange={(e) => setEstimatedDuration(e.target.value)}
-                required
-                className="w-full px-3.5 py-2.5 border border-graphite/20 rounded-xl text-sm text-graphite focus:outline-none focus:ring-2 focus:ring-repair-orange/30 focus:border-repair-orange"
-              />
+          <div className="pt-4 border-t border-border/70 flex items-center justify-end gap-3">
+            <Link
+              href="/dashboard/technician/services"
+              className="px-4 py-2.5 text-xs font-bold text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Cancel
+            </Link>
+            <MotionButton
+              type="submit"
+              variant="primary"
+              size="md"
+              isLoading={isSubmitting}
+            >
+              <CheckCircle2 className="w-4 h-4" />
+              <span>Save & Submit Updates</span>
+            </MotionButton>
+          </div>
+        </form>
+
+        {/* Live Preview */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+            <Eye className="w-3.5 h-3.5 text-[#F26A3D]" />
+            <span>Live Catalog Preview</span>
+          </div>
+
+          <div className="sticky top-24 bg-card rounded-3xl border border-border/80 overflow-hidden shadow-xs">
+            <div className="relative aspect-16/9 bg-muted overflow-hidden">
+              {image ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={image} alt="Service preview" className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground gap-2 p-4 text-center">
+                  <Wrench className="w-8 h-8 text-muted-foreground/60" />
+                </div>
+              )}
+              <div className="absolute top-3 left-3">
+                <Badge variant="orange" className="text-[10px] uppercase font-bold tracking-wider">
+                  {category}
+                </Badge>
+              </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-bold text-graphite uppercase tracking-wider mb-1">
-                Service Area / Radius
-              </label>
-              <input
-                type="text"
-                value={serviceArea}
-                onChange={(e) => setServiceArea(e.target.value)}
-                className="w-full px-3.5 py-2.5 border border-graphite/20 rounded-xl text-sm text-graphite focus:outline-none focus:ring-2 focus:ring-repair-orange/30 focus:border-repair-orange"
-              />
-            </div>
+            <div className="p-5 space-y-3">
+              <div className="space-y-1">
+                <h4 className="font-extrabold text-[#202522] text-base line-clamp-1">{title}</h4>
+                <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                  {description}
+                </p>
+              </div>
 
-            <div>
-              <label className="block text-xs font-bold text-graphite uppercase tracking-wider mb-1">
-                Turnaround Time
-              </label>
-              <input
-                type="text"
-                value={turnaroundTime}
-                onChange={(e) => setTurnaroundTime(e.target.value)}
-                className="w-full px-3.5 py-2.5 border border-graphite/20 rounded-xl text-sm text-graphite focus:outline-none focus:ring-2 focus:ring-repair-orange/30 focus:border-repair-orange"
-              />
+              <div className="pt-3 border-t border-border/70 flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">
+                    Base Rate
+                  </span>
+                  <span className="text-xl font-black text-[#202522] font-mono">
+                    ${basePrice ? parseFloat(basePrice).toFixed(2) : '0.00'}
+                  </span>
+                </div>
+                <div className="text-right">
+                  <span className="text-[10px] text-muted-foreground flex items-center gap-1 font-medium">
+                    <Clock className="w-3 h-3" />
+                    {estimatedDuration}
+                  </span>
+                  <span className="text-[10px] font-bold text-[#F26A3D] uppercase tracking-wider block mt-0.5">
+                    {serviceMode}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-
-        {/* Submit Button */}
-        <div className="pt-4 border-t border-graphite/10 flex items-center justify-end gap-3">
-          <Link
-            href="/dashboard/technician/services"
-            className="px-4 py-2.5 text-xs font-bold text-graphite/70 hover:text-graphite transition-colors"
-          >
-            Cancel
-          </Link>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="px-6 py-2.5 bg-repair-orange hover:bg-repair-orange-dark text-white rounded-xl text-xs font-bold transition-colors flex items-center gap-2 shadow-xs disabled:opacity-50"
-          >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Saving Changes...</span>
-              </>
-            ) : (
-              <>
-                <CheckCircle2 className="w-4 h-4" />
-                <span>Save Changes</span>
-              </>
-            )}
-          </button>
-        </div>
-      </form>
+      </div>
     </DashboardShell>
   );
 }

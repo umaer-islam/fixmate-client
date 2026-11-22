@@ -6,7 +6,8 @@ import { useAuth } from '@/providers/auth-provider';
 import { api } from '@/lib/api-client';
 import { toast } from 'sonner';
 import { Dialog, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { Calendar, MapPin, Phone, AlertCircle, Loader2, CheckCircle2 } from 'lucide-react';
+import { MotionButton } from '@/components/motion/motion-button';
+import { Calendar, MapPin, Phone, AlertCircle, Loader2, CheckCircle2, Clock, ShieldCheck } from 'lucide-react';
 
 interface ServiceSummary {
   _id: string;
@@ -106,59 +107,66 @@ export function BookingModal({ service, isOpen, onClose, onSuccess }: BookingMod
   return (
     <Dialog isOpen={isOpen} onClose={onClose}>
       <DialogHeader>
-        <DialogTitle>Request Service</DialogTitle>
+        <DialogTitle>Request Service Appointment</DialogTitle>
         <DialogDescription>
-          Schedule your repair appointment for <span className="font-semibold text-graphite">{service.title}</span>
+          Schedule your repair appointment for <span className="font-semibold text-foreground">{service.title}</span>
         </DialogDescription>
       </DialogHeader>
 
       <form onSubmit={handleSubmit} className="p-6 space-y-4">
         {error && (
-          <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm flex items-start gap-2">
-            <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+          <div className="p-3.5 bg-destructive/10 border border-destructive/20 text-destructive rounded-2xl text-xs flex items-start gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
             <span>{error}</span>
           </div>
         )}
 
         {/* Service summary pill */}
-        <div className="bg-sage/20 border border-sage/40 rounded-lg p-3 text-sm flex items-center justify-between">
+        <div className="bg-[#DCE8DE]/30 border border-[#DCE8DE] rounded-2xl p-4 text-xs flex items-center justify-between">
           <div>
-            <span className="text-graphite-light text-xs uppercase tracking-wider block">Estimated Fee</span>
-            <span className="font-bold text-graphite text-lg">${service.basePrice.toFixed(2)}</span>
+            <span className="text-muted-foreground text-[10px] uppercase font-bold tracking-wider block">
+              Estimated Rate
+            </span>
+            <span className="font-mono font-black text-[#202522] text-xl">${service.basePrice.toFixed(2)}</span>
           </div>
           <div className="text-right">
-            <span className="text-graphite-light text-xs uppercase tracking-wider block">Estimated Time</span>
-            <span className="font-medium text-graphite">{service.estimatedDuration}</span>
+            <span className="text-muted-foreground text-[10px] uppercase font-bold tracking-wider block">
+              Duration
+            </span>
+            <span className="font-medium text-foreground flex items-center gap-1 justify-end">
+              <Clock className="w-3 h-3" />
+              {service.estimatedDuration}
+            </span>
           </div>
           <div className="text-right">
-            <span className="text-graphite-light text-xs uppercase tracking-wider block">Mode</span>
-            <span className="capitalize px-2 py-0.5 rounded text-xs font-semibold bg-repair-orange/10 text-repair-orange">
+            <span className="text-muted-foreground text-[10px] uppercase font-bold tracking-wider block">
+              Mode
+            </span>
+            <span className="capitalize px-2 py-0.5 rounded-lg text-xs font-bold bg-[#F26A3D]/10 text-[#F26A3D]">
               {service.serviceMode}
             </span>
           </div>
         </div>
 
         {/* Preferred Date */}
-        <div>
-          <label className="block text-xs font-semibold text-graphite uppercase tracking-wider mb-1">
-            Preferred Date <span className="text-repair-orange">*</span>
+        <div className="space-y-1.5">
+          <label className="block text-xs font-bold text-foreground uppercase tracking-wider">
+            Preferred Date <span className="text-[#F26A3D]">*</span>
           </label>
-          <div className="relative">
-            <input
-              type="date"
-              min={todayStr}
-              value={preferredDate}
-              onChange={(e) => setPreferredDate(e.target.value)}
-              required
-              className="w-full px-3 py-2 border border-graphite/20 rounded-lg text-sm text-graphite focus:outline-none focus:ring-2 focus:ring-repair-orange/30 focus:border-repair-orange"
-            />
-          </div>
+          <input
+            type="date"
+            min={todayStr}
+            value={preferredDate}
+            onChange={(e) => setPreferredDate(e.target.value)}
+            required
+            className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm text-foreground bg-background focus:outline-none focus:ring-2 focus:ring-[#F26A3D]/30 focus:border-[#F26A3D]"
+          />
         </div>
 
         {/* Customer Phone */}
-        <div>
-          <label className="block text-xs font-semibold text-graphite uppercase tracking-wider mb-1">
-            Phone Number <span className="text-repair-orange">*</span>
+        <div className="space-y-1.5">
+          <label className="block text-xs font-bold text-foreground uppercase tracking-wider">
+            Phone Number <span className="text-[#F26A3D]">*</span>
           </label>
           <input
             type="tel"
@@ -166,14 +174,14 @@ export function BookingModal({ service, isOpen, onClose, onSuccess }: BookingMod
             value={customerPhone}
             onChange={(e) => setCustomerPhone(e.target.value)}
             required
-            className="w-full px-3 py-2 border border-graphite/20 rounded-lg text-sm text-graphite focus:outline-none focus:ring-2 focus:ring-repair-orange/30 focus:border-repair-orange"
+            className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm text-foreground bg-background focus:outline-none focus:ring-2 focus:ring-[#F26A3D]/30 focus:border-[#F26A3D]"
           />
         </div>
 
         {/* Service Address */}
-        <div>
-          <label className="block text-xs font-semibold text-graphite uppercase tracking-wider mb-1">
-            Service Address / Location <span className="text-repair-orange">*</span>
+        <div className="space-y-1.5">
+          <label className="block text-xs font-bold text-foreground uppercase tracking-wider">
+            Service Address / Location <span className="text-[#F26A3D]">*</span>
           </label>
           <input
             type="text"
@@ -181,14 +189,14 @@ export function BookingModal({ service, isOpen, onClose, onSuccess }: BookingMod
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             required
-            className="w-full px-3 py-2 border border-graphite/20 rounded-lg text-sm text-graphite focus:outline-none focus:ring-2 focus:ring-repair-orange/30 focus:border-repair-orange"
+            className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm text-foreground bg-background focus:outline-none focus:ring-2 focus:ring-[#F26A3D]/30 focus:border-[#F26A3D]"
           />
         </div>
 
         {/* Problem Description */}
-        <div>
-          <label className="block text-xs font-semibold text-graphite uppercase tracking-wider mb-1">
-            Problem Description <span className="text-repair-orange">*</span>
+        <div className="space-y-1.5">
+          <label className="block text-xs font-bold text-foreground uppercase tracking-wider">
+            Problem Description <span className="text-[#F26A3D]">*</span>
           </label>
           <textarea
             rows={3}
@@ -196,36 +204,28 @@ export function BookingModal({ service, isOpen, onClose, onSuccess }: BookingMod
             value={problemDescription}
             onChange={(e) => setProblemDescription(e.target.value)}
             required
-            className="w-full px-3 py-2 border border-graphite/20 rounded-lg text-sm text-graphite focus:outline-none focus:ring-2 focus:ring-repair-orange/30 focus:border-repair-orange"
+            className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm text-foreground bg-background focus:outline-none focus:ring-2 focus:ring-[#F26A3D]/30 focus:border-[#F26A3D]"
           />
         </div>
 
-        <div className="pt-2 flex items-center justify-end gap-3 border-t border-graphite/10">
+        <div className="pt-3 flex items-center justify-end gap-3 border-t border-border/70">
           <button
             type="button"
             onClick={onClose}
             disabled={isSubmitting}
-            className="px-4 py-2 text-sm font-medium text-graphite/70 hover:text-graphite transition-colors"
+            className="px-4 py-2 text-xs font-bold text-muted-foreground hover:text-foreground transition-colors"
           >
             Cancel
           </button>
-          <button
+          <MotionButton
             type="submit"
-            disabled={isSubmitting}
-            className="px-5 py-2.5 bg-repair-orange hover:bg-repair-orange-dark text-white rounded-lg text-sm font-semibold transition-colors flex items-center gap-2 shadow-sm disabled:opacity-50"
+            variant="primary"
+            size="md"
+            isLoading={isSubmitting}
           >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Scheduling...</span>
-              </>
-            ) : (
-              <>
-                <CheckCircle2 className="w-4 h-4" />
-                <span>Confirm Request</span>
-              </>
-            )}
-          </button>
+            <CheckCircle2 className="w-4 h-4" />
+            <span>Confirm Request</span>
+          </MotionButton>
         </div>
       </form>
     </Dialog>

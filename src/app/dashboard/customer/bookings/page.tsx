@@ -2,12 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'motion/react';
 import { api } from '@/lib/api-client';
 import { DashboardShell } from '@/components/dashboard/dashboard-shell';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PaymentBadge } from '@/components/dashboard/payment-badge';
 import { CancelBookingModal } from '@/components/booking/cancel-modal';
+import { MotionButton } from '@/components/motion/motion-button';
 import { toast } from 'sonner';
 import {
   Calendar,
@@ -126,6 +128,25 @@ export default function CustomerBookingsPage() {
     }
   };
 
+  const tabs = [
+    { key: 'all', label: 'All Requests', count: bookings.length },
+    {
+      key: 'active',
+      label: 'Active',
+      count: bookings.filter((b) => ['requested', 'accepted', 'in-progress'].includes(b.status)).length,
+    },
+    {
+      key: 'completed',
+      label: 'Completed',
+      count: bookings.filter((b) => b.status === 'completed').length,
+    },
+    {
+      key: 'cancelled',
+      label: 'Cancelled',
+      count: bookings.filter((b) => ['cancelled', 'rejected'].includes(b.status)).length,
+    },
+  ];
+
   return (
     <DashboardShell
       allowedRoles={['customer', 'technician', 'admin']}
@@ -133,158 +154,176 @@ export default function CustomerBookingsPage() {
       description="Track live status transitions, review estimates, cancel pending requests, or settle repair invoices."
     >
       {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-graphite/10 pb-4">
-        {[
-          { key: 'all', label: `All Requests (${bookings.length})` },
-          {
-            key: 'active',
-            label: `Active (${bookings.filter((b) => ['requested', 'accepted', 'in-progress'].includes(b.status)).length})`,
-          },
-          {
-            key: 'completed',
-            label: `Completed (${bookings.filter((b) => b.status === 'completed').length})`,
-          },
-          {
-            key: 'cancelled',
-            label: `Cancelled (${bookings.filter((b) => ['cancelled', 'rejected'].includes(b.status)).length})`,
-          },
-        ].map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setActiveTab(tab.key as any)}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-              activeTab === tab.key
-                ? 'bg-graphite text-white shadow-xs'
-                : 'bg-white text-graphite/70 hover:bg-white/80 border border-graphite/10'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
+      <div className="flex items-center gap-2 border-b border-border/80 pb-3 overflow-x-auto scrollbar-none">
+        {tabs.map((tab) => {
+          const isActive = activeTab === tab.key;
+          return (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key as any)}
+              className={`relative px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 ${
+                isActive
+                  ? 'text-white'
+                  : 'text-muted-foreground hover:text-foreground bg-card border border-border/70 hover:bg-muted/50'
+              }`}
+            >
+              {isActive && (
+                <motion.div
+                  layoutId="customer-bookings-active-pill"
+                  className="absolute inset-0 bg-[#202522] rounded-2xl shadow-xs"
+                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                />
+              )}
+              <span className="relative z-10">{tab.label}</span>
+              <span
+                className={`relative z-10 text-[10px] px-1.5 py-0.5 rounded-full font-mono font-bold ${
+                  isActive ? 'bg-white/20 text-white' : 'bg-muted text-muted-foreground'
+                }`}
+              >
+                {tab.count}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Bookings List */}
       {isLoading ? (
         <div className="space-y-4">
-          <Skeleton className="h-36 w-full rounded-2xl" />
-          <Skeleton className="h-36 w-full rounded-2xl" />
-          <Skeleton className="h-36 w-full rounded-2xl" />
+          <Skeleton className="h-40 w-full rounded-3xl" />
+          <Skeleton className="h-40 w-full rounded-3xl" />
+          <Skeleton className="h-40 w-full rounded-3xl" />
         </div>
       ) : filteredBookings.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-graphite/10 p-12 text-center space-y-4">
-          <Calendar className="w-12 h-12 text-graphite-light mx-auto" />
-          <h3 className="font-bold text-graphite text-lg">No Bookings in this Category</h3>
-          <p className="text-sm text-graphite-light max-w-sm mx-auto">
+        <div className="bg-card rounded-3xl border border-border/80 p-12 text-center space-y-4">
+          <div className="w-14 h-14 rounded-2xl bg-muted/70 flex items-center justify-center mx-auto text-muted-foreground">
+            <Calendar className="w-7 h-7" />
+          </div>
+          <h3 className="font-bold text-foreground text-base">No Bookings in this Category</h3>
+          <p className="text-xs text-muted-foreground max-w-sm mx-auto leading-relaxed">
             You don&apos;t have any repair bookings matching this filter.
           </p>
-          <Link
-            href="/services"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-repair-orange text-white rounded-xl text-xs font-bold hover:bg-repair-orange-dark transition-colors"
-          >
-            <Wrench className="w-4 h-4" />
-            <span>Explore Repair Services</span>
+          <Link href="/services" className="inline-block pt-1">
+            <MotionButton variant="primary" size="sm">
+              <Wrench className="w-4 h-4" />
+              <span>Explore Repair Services</span>
+            </MotionButton>
           </Link>
         </div>
       ) : (
         <div className="space-y-4">
-          {filteredBookings.map((b) => (
-            <div
-              key={b._id}
-              className="bg-white rounded-2xl border border-graphite/10 p-6 shadow-xs hover:border-graphite/20 transition-all flex flex-col md:flex-row md:items-center justify-between gap-6"
-            >
-              {/* Left Column: Service Details */}
-              <div className="flex items-start gap-4 flex-1">
-                <div className="w-16 h-16 rounded-xl bg-ivory border border-graphite/10 flex items-center justify-center overflow-hidden flex-shrink-0">
-                  {b.serviceImage ? (
-                    <img src={b.serviceImage} alt={b.serviceTitle} className="w-full h-full object-cover" />
-                  ) : (
-                    <Wrench className="w-6 h-6 text-graphite/40" />
-                  )}
+          <AnimatePresence mode="popLayout">
+            {filteredBookings.map((b) => (
+              <motion.div
+                key={b._id}
+                layout
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                whileHover={{ y: -2, transition: { type: 'spring', stiffness: 350, damping: 25 } }}
+                className="bg-card rounded-3xl border border-border/80 p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6 transition-colors hover:border-border"
+              >
+                {/* Left Column: Service Details */}
+                <div className="flex items-start gap-4 flex-1">
+                  <div className="w-16 h-16 rounded-2xl bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
+                    {b.serviceImage ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={b.serviceImage} alt={b.serviceTitle} className="w-full h-full object-cover" />
+                    ) : (
+                      <Wrench className="w-6 h-6 text-muted-foreground" />
+                    )}
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-xs uppercase font-bold tracking-wider text-[#F26A3D]">
+                        {b.serviceCategory}
+                      </span>
+                      <span className="text-border">•</span>
+                      <span className="text-xs text-muted-foreground">
+                        Scheduled: <strong className="text-foreground">{new Date(b.preferredDate).toLocaleDateString()}</strong>
+                      </span>
+                    </div>
+                    <h3 className="font-extrabold text-[#202522] text-base tracking-tight hover:text-[#F26A3D] transition-colors">
+                      <Link href={`/dashboard/customer/bookings/${b._id}`}>{b.serviceTitle}</Link>
+                    </h3>
+                    <p className="text-xs text-muted-foreground line-clamp-1 leading-relaxed">
+                      Problem: {b.problemDescription}
+                    </p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      Location: {b.address}
+                    </p>
+                  </div>
                 </div>
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs uppercase font-bold text-repair-orange">{b.serviceCategory}</span>
-                    <span>•</span>
-                    <span className="text-xs text-graphite-light">
-                      Scheduled: {new Date(b.preferredDate).toLocaleDateString()}
+
+                {/* Middle: Status & Payment */}
+                <div className="flex sm:flex-col items-center sm:items-end justify-between gap-2 border-t sm:border-t-0 pt-4 sm:pt-0 border-border/70 shrink-0">
+                  <div className="flex items-center gap-2">
+                    {getStatusBadge(b.status)}
+                    <PaymentBadge status={b.paymentStatus} />
+                  </div>
+                  <div className="sm:text-right">
+                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">
+                      Amount
+                    </span>
+                    <span className="text-xl font-black text-[#202522] font-mono">
+                      ${((b.finalAmount ?? b.basePrice) || 0).toFixed(2)}
                     </span>
                   </div>
-                  <h3 className="font-extrabold text-graphite text-base hover:text-repair-orange transition-colors">
-                    <Link href={`/dashboard/customer/bookings/${b._id}`}>{b.serviceTitle}</Link>
-                  </h3>
-                  <p className="text-xs text-graphite-light line-clamp-1">
-                    Problem: {b.problemDescription}
-                  </p>
-                  <p className="text-xs text-graphite/60">
-                    Location: {b.address}
-                  </p>
                 </div>
-              </div>
 
-              {/* Middle: Status & Payment */}
-              <div className="flex sm:flex-col items-center sm:items-end justify-between gap-2 border-t sm:border-t-0 pt-4 sm:pt-0 border-graphite/10">
-                <div className="flex items-center gap-2">
-                  {getStatusBadge(b.status)}
-                  <PaymentBadge status={b.paymentStatus} />
-                </div>
-                <div className="sm:text-right">
-                  <span className="text-xs text-graphite-light block">Amount</span>
-                  <span className="text-lg font-black text-graphite">
-                    ${((b.finalAmount ?? b.basePrice) || 0).toFixed(2)}
-                  </span>
-                </div>
-              </div>
-
-              {/* Right: Actions */}
-              <div className="flex items-center gap-2 flex-wrap justify-end border-t md:border-t-0 pt-4 md:pt-0 border-graphite/10">
-                {/* Pay Now Button (if completed and unpaid) */}
-                {b.status === 'completed' && b.paymentStatus === 'unpaid' && (
-                  <button
-                    onClick={() => handlePayNow(b._id)}
-                    disabled={processingId === b._id}
-                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-xs disabled:opacity-50"
-                  >
-                    {processingId === b._id ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    ) : (
+                {/* Right: Actions */}
+                <div className="flex items-center gap-2 flex-wrap justify-end border-t md:border-t-0 pt-4 md:pt-0 border-border/70 shrink-0">
+                  {/* Pay Now Button (if completed and unpaid) */}
+                  {b.status === 'completed' && b.paymentStatus === 'unpaid' && (
+                    <MotionButton
+                      variant="primary"
+                      size="sm"
+                      onClick={() => handlePayNow(b._id)}
+                      isLoading={processingId === b._id}
+                      className="bg-emerald-600 hover:bg-emerald-700"
+                    >
                       <CreditCard className="w-3.5 h-3.5" />
-                    )}
-                    <span>Pay with Stripe</span>
-                  </button>
-                )}
+                      <span>Pay Now with Stripe</span>
+                    </MotionButton>
+                  )}
 
-                {/* Cancel Button (if requested) */}
-                {b.status === 'requested' && (
-                  <button
-                    onClick={() => setCancellingBooking({ id: b._id, title: b.serviceTitle })}
-                    disabled={processingId === b._id}
-                    className="px-3.5 py-2 border border-red-200 text-red-600 hover:bg-red-50 rounded-xl text-xs font-bold transition-colors disabled:opacity-50"
-                  >
-                    Cancel Request
-                  </button>
-                )}
+                  {/* Cancel Button (if requested) */}
+                  {b.status === 'requested' && (
+                    <MotionButton
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCancellingBooking({ id: b._id, title: b.serviceTitle })}
+                      isLoading={processingId === b._id}
+                      className="text-destructive border-destructive/30 hover:bg-destructive/10"
+                    >
+                      <XCircle className="w-3.5 h-3.5" />
+                      <span>Cancel</span>
+                    </MotionButton>
+                  )}
 
-                <Link
-                  href={`/dashboard/customer/bookings/${b._id}`}
-                  className="px-4 py-2 bg-graphite hover:bg-graphite/90 text-white rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5"
-                >
-                  <span>Details</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            </div>
-          ))}
+                  {/* View Details Link */}
+                  <Link href={`/dashboard/customer/bookings/${b._id}`}>
+                    <MotionButton variant="outline" size="sm">
+                      <span>Details</span>
+                      <ChevronRight className="w-3.5 h-3.5 ml-1" />
+                    </MotionButton>
+                  </Link>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       )}
 
-      {/* Cancel Booking Confirmation Modal */}
-      <CancelBookingModal
-        isOpen={Boolean(cancellingBooking)}
-        onClose={() => setCancellingBooking(null)}
-        bookingTitle={cancellingBooking?.title}
-        bookingId={cancellingBooking?.id}
-        onConfirm={handleConfirmCancel}
-      />
+      {/* Cancel Confirmation Modal */}
+      {cancellingBooking && (
+        <CancelBookingModal
+          isOpen={Boolean(cancellingBooking)}
+          onClose={() => setCancellingBooking(null)}
+          onConfirm={handleConfirmCancel}
+          bookingTitle={cancellingBooking.title}
+        />
+      )}
     </DashboardShell>
   );
 }

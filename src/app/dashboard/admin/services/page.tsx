@@ -2,11 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'motion/react';
 import { api } from '@/lib/api-client';
 import { DashboardShell } from '@/components/dashboard/dashboard-shell';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Dialog, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { MotionButton } from '@/components/motion/motion-button';
 import { toast } from 'sonner';
 import {
   Wrench,
@@ -18,6 +20,8 @@ import {
   Search,
   Loader2,
   Filter,
+  User,
+  DollarSign,
 } from 'lucide-react';
 
 interface AdminServiceItem {
@@ -28,7 +32,7 @@ interface AdminServiceItem {
   image: string;
   basePrice: number;
   estimatedDuration: string;
-  serviceMode: 'onsite' | 'remote' | 'both';
+  serviceMode: 'onsite' | 'remote' | 'both' | string;
   technicianId: string;
   technicianName?: string;
   isAvailable: boolean;
@@ -127,6 +131,13 @@ export default function AdminServicesModerationPage() {
     }
   };
 
+  const filters = [
+    { key: 'pending', label: 'Pending Review', count: services.filter((s) => s.approvalStatus === 'pending').length },
+    { key: 'approved', label: 'Approved', count: services.filter((s) => s.approvalStatus === 'approved').length },
+    { key: 'rejected', label: 'Rejected', count: services.filter((s) => s.approvalStatus === 'rejected').length },
+    { key: 'all', label: 'All Listings', count: services.length },
+  ];
+
   return (
     <DashboardShell
       allowedRoles={['admin']}
@@ -134,38 +145,50 @@ export default function AdminServicesModerationPage() {
       description="Review new repair listings submitted by technicians. Approve quality offerings or provide moderation feedback."
     >
       {/* Top Filter & Search Bar */}
-      <div className="bg-white rounded-2xl border border-graphite/10 p-4 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="bg-card rounded-3xl border border-border/80 p-4 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
         {/* Filter Pills */}
         <div className="flex items-center gap-1.5 flex-wrap w-full sm:w-auto">
-          {[
-            { key: 'pending', label: `Pending (${services.filter((s) => s.approvalStatus === 'pending').length})` },
-            { key: 'approved', label: `Approved (${services.filter((s) => s.approvalStatus === 'approved').length})` },
-            { key: 'rejected', label: `Rejected (${services.filter((s) => s.approvalStatus === 'rejected').length})` },
-            { key: 'all', label: `All (${services.length})` },
-          ].map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveFilter(tab.key as any)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                activeFilter === tab.key
-                  ? 'bg-graphite text-white shadow-xs'
-                  : 'bg-ivory text-graphite/70 hover:bg-white hover:text-graphite'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+          {filters.map((tab) => {
+            const isActive = activeFilter === tab.key;
+            return (
+              <button
+                key={tab.key}
+                onClick={() => setActiveFilter(tab.key as any)}
+                className={`relative px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  isActive
+                    ? 'text-white'
+                    : 'text-muted-foreground hover:text-foreground bg-muted/60 hover:bg-muted'
+                }`}
+              >
+                {isActive && (
+                  <motion.div
+                    layoutId="admin-moderation-pill"
+                    className="absolute inset-0 bg-[#202522] rounded-xl shadow-xs"
+                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10">{tab.label}</span>
+                <span
+                  className={`relative z-10 text-[10px] px-1.5 py-0.5 rounded-full font-mono font-bold ${
+                    isActive ? 'bg-white/20 text-white' : 'bg-background/80 text-muted-foreground'
+                  }`}
+                >
+                  {tab.count}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Search */}
         <div className="relative w-full sm:w-72">
-          <Search className="w-4 h-4 text-graphite/40 absolute left-3 top-2.5" />
+          <Search className="w-4 h-4 text-muted-foreground absolute left-3 top-2.5" />
           <input
             type="text"
             placeholder="Search by title, tech, category..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 border border-graphite/10 rounded-xl text-xs text-graphite focus:outline-none focus:ring-2 focus:ring-repair-orange/30 focus:border-repair-orange"
+            className="w-full pl-9 pr-3 py-2 border border-border rounded-xl text-xs text-foreground bg-background focus:outline-none focus:ring-2 focus:ring-[#F26A3D]/30 focus:border-[#F26A3D]"
           />
         </div>
       </div>
@@ -173,159 +196,176 @@ export default function AdminServicesModerationPage() {
       {/* Services List */}
       {isLoading ? (
         <div className="space-y-4">
-          <Skeleton className="h-36 w-full rounded-2xl" />
-          <Skeleton className="h-36 w-full rounded-2xl" />
+          <Skeleton className="h-40 w-full rounded-3xl" />
+          <Skeleton className="h-40 w-full rounded-3xl" />
         </div>
       ) : filteredServices.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-graphite/10 p-12 text-center space-y-3">
-          <Wrench className="w-12 h-12 text-graphite-light mx-auto" />
-          <h3 className="font-bold text-graphite text-base">No Services Found</h3>
-          <p className="text-xs text-graphite-light max-w-sm mx-auto">
+        <div className="bg-card rounded-3xl border border-border/80 p-12 text-center space-y-3">
+          <div className="w-14 h-14 rounded-2xl bg-muted/70 flex items-center justify-center mx-auto text-muted-foreground">
+            <Wrench className="w-7 h-7" />
+          </div>
+          <h3 className="font-bold text-foreground text-base">No Services Found</h3>
+          <p className="text-xs text-muted-foreground max-w-sm mx-auto leading-relaxed">
             There are no repair offerings matching your current filter criteria.
           </p>
         </div>
       ) : (
         <div className="space-y-4">
-          {filteredServices.map((s) => (
-            <div
-              key={s._id}
-              className="bg-white rounded-2xl border border-graphite/10 p-5 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-5"
-            >
-              {/* Left Column: Thumbnail & Details */}
-              <div className="flex items-start gap-4 flex-1">
-                <div className="w-20 h-20 rounded-xl bg-ivory border border-graphite/10 overflow-hidden flex-shrink-0">
-                  <img src={s.image} alt={s.title} className="w-full h-full object-cover" />
-                </div>
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-[10px] uppercase font-bold text-repair-orange">{s.category}</span>
-                    <span>•</span>
-                    <span className="text-xs text-graphite-light capitalize">{s.serviceMode} mode</span>
-                    <span>•</span>
-                    {getApprovalBadge(s.approvalStatus)}
+          <AnimatePresence mode="popLayout">
+            {filteredServices.map((s) => (
+              <motion.div
+                key={s._id}
+                layout
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                whileHover={{ y: -2, transition: { type: 'spring', stiffness: 350, damping: 25 } }}
+                className="bg-card rounded-3xl border border-border/80 p-5 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-5 transition-colors hover:border-border"
+              >
+                {/* Left Column: Thumbnail & Details */}
+                <div className="flex items-start gap-4 flex-1">
+                  <div className="w-20 h-20 rounded-2xl bg-muted border border-border overflow-hidden shrink-0 shadow-2xs">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={s.image} alt={s.title} className="w-full h-full object-cover" />
                   </div>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-[#F26A3D]">
+                        {s.category}
+                      </span>
+                      <span className="text-border">•</span>
+                      <span className="text-xs text-muted-foreground capitalize">{s.serviceMode} mode</span>
+                      <span className="text-border">•</span>
+                      {getApprovalBadge(s.approvalStatus)}
+                    </div>
 
-                  <h3 className="font-extrabold text-graphite text-base">{s.title}</h3>
+                    <h3 className="font-extrabold text-[#202522] text-base tracking-tight">{s.title}</h3>
 
-                  <p className="text-xs text-graphite-light line-clamp-2">{s.description}</p>
-
-                  <div className="flex items-center gap-3 pt-1 text-xs text-graphite-light">
-                    <span>
-                      Technician: <strong className="text-graphite">{s.technicianName || 'Verified Tech'}</strong>
-                    </span>
-                    <span>•</span>
-                    <span>Submitted: {new Date(s.createdAt).toLocaleDateString()}</span>
-                  </div>
-
-                  {s.moderationNotes && (
-                    <p className="text-xs text-graphite bg-ivory p-2 rounded-lg border border-graphite/10 mt-1">
-                      <strong>Notes:</strong> {s.moderationNotes}
+                    <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                      {s.description}
                     </p>
+
+                    <div className="flex items-center gap-3 pt-1 text-xs text-muted-foreground flex-wrap">
+                      <span className="flex items-center gap-1">
+                        <User className="w-3.5 h-3.5" />
+                        Technician: <strong className="text-foreground">{s.technicianName || 'Verified Tech'}</strong>
+                      </span>
+                      <span className="text-border">•</span>
+                      <span>Submitted: {new Date(s.createdAt).toLocaleDateString()}</span>
+                    </div>
+
+                    {s.moderationNotes && (
+                      <div className="text-xs text-foreground bg-[#F5F3EE]/80 p-2.5 rounded-xl border border-border/70 mt-1">
+                        <strong className="font-semibold">Notes:</strong> {s.moderationNotes}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Price & SLA */}
+                <div className="flex lg:flex-col items-center lg:items-end justify-between border-t lg:border-t-0 pt-3 lg:pt-0 border-border/70 shrink-0">
+                  <div className="lg:text-right">
+                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">
+                      Base Price
+                    </span>
+                    <span className="text-2xl font-black text-[#202522] font-mono">
+                      ${s.basePrice.toFixed(2)}
+                    </span>
+                  </div>
+                  <span className="text-xs text-muted-foreground flex items-center gap-1 font-medium mt-0.5">
+                    <Clock className="w-3 h-3" />
+                    {s.estimatedDuration}
+                  </span>
+                </div>
+
+                {/* Action Controls */}
+                <div className="flex items-center gap-2 self-end lg:self-center border-t lg:border-t-0 pt-3 lg:pt-0 border-border/70 flex-wrap shrink-0">
+                  {s.approvalStatus !== 'approved' && (
+                    <MotionButton
+                      variant="primary"
+                      size="sm"
+                      onClick={() => handleApprove(s._id)}
+                      isLoading={processingId === s._id}
+                      className="bg-emerald-600 hover:bg-emerald-700"
+                    >
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>Approve</span>
+                    </MotionButton>
                   )}
-                </div>
-              </div>
 
-              {/* Price & SLA */}
-              <div className="flex lg:flex-col items-center lg:items-end justify-between border-t lg:border-t-0 pt-3 lg:pt-0 border-graphite/10">
-                <div className="lg:text-right">
-                  <span className="text-xs text-graphite-light block">Base Price</span>
-                  <span className="text-xl font-black text-graphite">${s.basePrice.toFixed(2)}</span>
-                </div>
-                <span className="text-xs text-graphite-light">{s.estimatedDuration}</span>
-              </div>
+                  {s.approvalStatus !== 'rejected' && (
+                    <MotionButton
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setRejectingService(s);
+                        setModerationNotes(s.moderationNotes || '');
+                      }}
+                      className="text-destructive border-destructive/30 hover:bg-destructive/10"
+                    >
+                      <XCircle className="w-3.5 h-3.5" />
+                      <span>Reject</span>
+                    </MotionButton>
+                  )}
 
-              {/* Action Controls */}
-              <div className="flex items-center gap-2 self-end lg:self-center border-t lg:border-t-0 pt-3 lg:pt-0 border-graphite/10 flex-wrap">
-                {s.approvalStatus !== 'approved' && (
-                  <button
-                    onClick={() => handleApprove(s._id)}
-                    disabled={processingId === s._id}
-                    className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 shadow-xs disabled:opacity-50"
+                  <Link
+                    href={`/services/${s._id}`}
+                    target="_blank"
+                    className="p-2 text-muted-foreground hover:text-foreground bg-muted/60 hover:bg-muted border border-border rounded-xl transition-colors"
+                    title="Preview Public Page"
                   >
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>Approve</span>
-                  </button>
-                )}
-
-                {s.approvalStatus !== 'rejected' && (
-                  <button
-                    onClick={() => {
-                      setRejectingService(s);
-                      setModerationNotes(s.moderationNotes || '');
-                    }}
-                    disabled={processingId === s._id}
-                    className="px-3.5 py-2 border border-red-200 text-red-600 hover:bg-red-50 rounded-xl text-xs font-bold transition-colors disabled:opacity-50"
-                  >
-                    <XCircle className="w-3.5 h-3.5" />
-                    <span>Reject</span>
-                  </button>
-                )}
-
-                <Link
-                  href={`/services/${s._id}`}
-                  target="_blank"
-                  className="p-2 text-graphite/70 hover:text-graphite bg-ivory hover:bg-white border border-graphite/10 rounded-xl transition-colors"
-                  title="Preview Service"
-                >
-                  <Eye className="w-4 h-4" />
-                </Link>
-              </div>
-            </div>
-          ))}
+                    <Eye className="w-4 h-4" />
+                  </Link>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       )}
 
-      {/* Rejection Feedback Dialog */}
+      {/* Rejection Dialog */}
       {rejectingService && (
         <Dialog isOpen={Boolean(rejectingService)} onClose={() => setRejectingService(null)}>
           <DialogHeader>
             <DialogTitle>Reject Service Offering</DialogTitle>
             <DialogDescription>
-              State reasons for rejecting <span className="font-semibold text-graphite">{rejectingService.title}</span> so the technician can address quality or policy guidelines.
+              Return <span className="font-semibold text-foreground">{rejectingService.title}</span> to the technician. Specify corrective feedback.
             </DialogDescription>
           </DialogHeader>
 
           <form onSubmit={handleConfirmReject} className="p-6 space-y-4">
-            <div>
-              <label className="block text-xs font-bold text-graphite uppercase tracking-wider mb-1">
-                Moderation Notes / Feedback
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                Moderation Feedback / Notes
               </label>
               <textarea
                 rows={4}
-                placeholder="e.g. Please provide clearer description of hardware warranty, or replace low-resolution thumbnail..."
+                required
+                placeholder="e.g. Please clarify warranty duration, provide higher resolution imagery, or refine service scope."
                 value={moderationNotes}
                 onChange={(e) => setModerationNotes(e.target.value)}
-                maxLength={500}
-                className="w-full px-3.5 py-2.5 border border-graphite/20 rounded-xl text-xs text-graphite focus:outline-none focus:ring-2 focus:ring-repair-orange/30 focus:border-repair-orange"
+                className="w-full px-3.5 py-2.5 border border-border rounded-xl text-xs text-foreground bg-background focus:outline-none focus:ring-2 focus:ring-[#F26A3D]/30 focus:border-[#F26A3D]"
               />
-              <span className="text-[10px] text-graphite-light block text-right">Max 500 characters</span>
             </div>
 
-            <div className="pt-3 flex items-center justify-end gap-3 border-t border-graphite/10">
+            <div className="pt-2 flex items-center justify-end gap-3 border-t border-border/70">
               <button
                 type="button"
                 onClick={() => setRejectingService(null)}
-                className="px-4 py-2 text-xs font-bold text-graphite/70 hover:text-graphite"
+                className="px-4 py-2 text-xs font-bold text-muted-foreground hover:text-foreground transition-colors"
               >
                 Cancel
               </button>
-              <button
+              <MotionButton
                 type="submit"
-                disabled={isSubmittingReject}
-                className="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 shadow-xs disabled:opacity-50"
+                variant="outline"
+                size="sm"
+                isLoading={isSubmittingReject}
+                className="text-destructive border-destructive/30 hover:bg-destructive/10"
               >
-                {isSubmittingReject ? (
-                  <>
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    <span>Rejecting...</span>
-                  </>
-                ) : (
-                  <>
-                    <XCircle className="w-3.5 h-3.5" />
-                    <span>Confirm Rejection</span>
-                  </>
-                )}
-              </button>
+                <XCircle className="w-3.5 h-3.5" />
+                <span>Confirm Rejection</span>
+              </MotionButton>
             </div>
           </form>
         </Dialog>

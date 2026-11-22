@@ -3,9 +3,13 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { motion } from 'motion/react';
 import { useAuth } from '@/providers/auth-provider';
 import { ProtectedRoute } from '@/components/auth/protected-route';
 import { Badge } from '@/components/ui/badge';
+import { Navbar } from '@/components/layout/navbar';
+import { Footer } from '@/components/layout/footer';
+import { motionSprings, buttonTapSpring } from '@/lib/motion/tokens';
 import {
   LayoutDashboard,
   Calendar,
@@ -19,6 +23,7 @@ import {
   DollarSign,
   Layers,
   ArrowRight,
+  ChevronRight,
 } from 'lucide-react';
 
 interface DashboardShellProps {
@@ -66,105 +71,135 @@ export function DashboardShell({
 
   return (
     <ProtectedRoute allowedRoles={allowedRoles}>
-      <div className="min-h-screen bg-ivory">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* Sidebar Navigation */}
-            <aside className="lg:col-span-1">
-              <div className="bg-white rounded-2xl border border-graphite/10 p-5 shadow-sm space-y-6">
-                {/* User card snippet */}
-                <div className="flex items-center gap-3 pb-5 border-b border-graphite/10">
-                  <div className="w-12 h-12 rounded-full bg-repair-orange/10 border border-repair-orange/20 flex items-center justify-center font-bold text-repair-orange text-lg">
-                    {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
+      <div className="min-h-screen flex flex-col bg-[#F5F3EE]">
+        <Navbar />
+
+        <div className="flex-1 py-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+              {/* Sidebar Navigation */}
+              <aside className="lg:col-span-1">
+                <div className="sticky top-20 bg-card rounded-3xl border border-border/80 p-5 shadow-xs space-y-6">
+                  {/* User snippet card */}
+                  <div className="flex items-center gap-3.5 pb-5 border-b border-border/70">
+                    <div className="w-12 h-12 rounded-2xl bg-[#202522] text-[#F26A3D] flex items-center justify-center font-bold text-lg shadow-xs overflow-hidden shrink-0">
+                      {user?.avatarUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={user.avatarUrl} alt={user.name || 'User'} className="h-full w-full object-cover" />
+                      ) : (
+                        <span>{user?.name ? user.name.charAt(0).toUpperCase() : 'U'}</span>
+                      )}
+                    </div>
+                    <div className="overflow-hidden">
+                      <p className="font-bold text-foreground text-sm truncate">{user?.name || 'FixMate User'}</p>
+                      <p className="text-[11px] text-muted-foreground truncate">{user?.email}</p>
+                      <div className="mt-1">
+                        <Badge
+                          variant={role === 'admin' ? 'default' : role === 'technician' ? 'orange' : 'sage'}
+                          className="text-[10px] uppercase font-bold py-0.5 px-2"
+                        >
+                          {role || 'Customer'}
+                        </Badge>
+                      </div>
+                    </div>
                   </div>
-                  <div className="overflow-hidden">
-                    <p className="font-bold text-graphite text-sm truncate">{user?.name || 'FixMate User'}</p>
-                    <p className="text-xs text-graphite-light truncate">{user?.email}</p>
-                    <div className="mt-1">
-                      <Badge
-                        variant={role === 'admin' ? 'danger' : role === 'technician' ? 'warning' : 'primary'}
-                        className="text-[10px] uppercase font-bold py-0.5 px-2"
+
+                  {/* Navigation Links with animated active pill */}
+                  <nav className="space-y-1">
+                    {navItems.map((item) => {
+                      const Icon = item.icon;
+                      const isActive = pathname === item.href;
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          className="relative flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-colors select-none"
+                        >
+                          {isActive && (
+                            <motion.div
+                              layoutId="dashboard-sidebar-active"
+                              transition={motionSprings.snappy}
+                              className="absolute inset-0 bg-[#202522] rounded-2xl shadow-xs"
+                            />
+                          )}
+                          <Icon
+                            className={`relative z-10 w-4 h-4 ${
+                              isActive ? 'text-[#F26A3D]' : 'text-muted-foreground'
+                            }`}
+                          />
+                          <span
+                            className={`relative z-10 ${
+                              isActive ? 'text-[#F5F3EE]' : 'text-foreground/75 hover:text-foreground'
+                            }`}
+                          >
+                            {item.label}
+                          </span>
+                        </Link>
+                      );
+                    })}
+                  </nav>
+
+                  {/* Workspace switcher */}
+                  <div className="pt-4 border-t border-border/70 space-y-2">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
+                      Quick Portal Switch
+                    </span>
+                    <div className="flex flex-col gap-1 text-xs">
+                      <Link
+                        href="/dashboard/customer"
+                        className="px-2.5 py-1.5 rounded-xl text-muted-foreground hover:bg-muted/70 hover:text-foreground flex items-center justify-between transition-colors font-medium text-[11px]"
                       >
-                        {role || 'Customer'}
-                      </Badge>
+                        <span>Customer Portal</span>
+                        <ChevronRight className="w-3.5 h-3.5 opacity-60" />
+                      </Link>
+                      {role === 'technician' && (
+                        <Link
+                          href="/dashboard/technician/requests"
+                          className="px-2.5 py-1.5 rounded-xl text-muted-foreground hover:bg-muted/70 hover:text-foreground flex items-center justify-between transition-colors font-medium text-[11px]"
+                        >
+                          <span>Technician Queue</span>
+                          <ChevronRight className="w-3.5 h-3.5 opacity-60" />
+                        </Link>
+                      )}
+                      {role === 'admin' && (
+                        <Link
+                          href="/dashboard/admin"
+                          className="px-2.5 py-1.5 rounded-xl text-muted-foreground hover:bg-muted/70 hover:text-foreground flex items-center justify-between transition-colors font-medium text-[11px]"
+                        >
+                          <span>Admin Console</span>
+                          <ChevronRight className="w-3.5 h-3.5 opacity-60" />
+                        </Link>
+                      )}
                     </div>
                   </div>
                 </div>
+              </aside>
 
-                {/* Nav Links */}
-                <nav className="space-y-1">
-                  {navItems.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = pathname === item.href;
-                    return (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all ${
-                          isActive
-                            ? 'bg-graphite text-white shadow-xs'
-                            : 'text-graphite/70 hover:bg-ivory hover:text-graphite'
-                        }`}
-                      >
-                        <Icon className={`w-4 h-4 ${isActive ? 'text-repair-orange' : 'text-graphite/50'}`} />
-                        <span>{item.label}</span>
-                      </Link>
-                    );
-                  })}
-                </nav>
-
-                {/* Role Switcher Shortcuts (for testing / admin / pro ease) */}
-                <div className="pt-4 border-t border-graphite/10 space-y-2">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-graphite-light block">
-                    Switch Workspace
-                  </span>
-                  <div className="flex flex-col gap-1 text-xs">
-                    <Link
-                      href="/dashboard/customer"
-                      className="px-2.5 py-1.5 rounded-lg text-graphite/70 hover:bg-ivory hover:text-graphite flex items-center justify-between"
-                    >
-                      <span>Customer Portal</span>
-                      <ArrowRight className="w-3.5 h-3.5 opacity-50" />
-                    </Link>
-                    {role === 'technician' && (
-                      <Link
-                        href="/dashboard/technician/bookings"
-                        className="px-2.5 py-1.5 rounded-lg text-graphite/70 hover:bg-ivory hover:text-graphite flex items-center justify-between"
-                      >
-                        <span>Technician Portal</span>
-                        <ArrowRight className="w-3.5 h-3.5 opacity-50" />
-                      </Link>
-                    )}
-                    {role === 'admin' && (
-                      <Link
-                        href="/dashboard/admin"
-                        className="px-2.5 py-1.5 rounded-lg text-graphite/70 hover:bg-ivory hover:text-graphite flex items-center justify-between"
-                      >
-                        <span>Admin Console</span>
-                        <ArrowRight className="w-3.5 h-3.5 opacity-50" />
-                      </Link>
+              {/* Main Workspace Area */}
+              <main className="lg:col-span-3 space-y-6">
+                {/* Header Banner */}
+                <div className="bg-card rounded-3xl border border-border/80 p-6 sm:p-7 shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div className="space-y-1">
+                    <h1 className="text-2xl font-black text-[#202522] tracking-tight font-heading">
+                      {title}
+                    </h1>
+                    {description && (
+                      <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                        {description}
+                      </p>
                     )}
                   </div>
+                  {action && <div className="shrink-0">{action}</div>}
                 </div>
-              </div>
-            </aside>
 
-            {/* Main Content Area */}
-            <main className="lg:col-span-3 space-y-6">
-              {/* Header */}
-              <div className="bg-white rounded-2xl border border-graphite/10 p-6 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                  <h1 className="text-2xl font-extrabold text-graphite tracking-tight">{title}</h1>
-                  {description && <p className="text-sm text-graphite-light mt-1">{description}</p>}
-                </div>
-                {action && <div>{action}</div>}
-              </div>
-
-              {/* Children */}
-              {children}
-            </main>
+                {/* Main View Content */}
+                <div className="space-y-6">{children}</div>
+              </main>
+            </div>
           </div>
         </div>
+
+        <Footer />
       </div>
     </ProtectedRoute>
   );

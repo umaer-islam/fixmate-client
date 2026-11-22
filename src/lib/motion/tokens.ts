@@ -26,11 +26,11 @@ export const motionEasings = {
 
 export const motionSprings = {
   // For buttons, chips, micro-interactions
-  snappy: { type: 'spring', stiffness: 420, damping: 28 },
+  snappy: { type: 'spring' as const, stiffness: 420, damping: 28 },
   // For cards, modals, dropdowns
-  smooth: { type: 'spring', stiffness: 260, damping: 25 },
+  smooth: { type: 'spring' as const, stiffness: 260, damping: 25 },
   // For gentle reveals and floating badges
-  gentle: { type: 'spring', stiffness: 140, damping: 20 },
+  gentle: { type: 'spring' as const, stiffness: 140, damping: 20 },
 };
 
 // Reusable standard Framer/Motion variants

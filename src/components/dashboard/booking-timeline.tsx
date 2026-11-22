@@ -1,7 +1,9 @@
 'use client';
 
 import React from 'react';
+import { motion } from 'motion/react';
 import { Clock, ShieldCheck, Wrench, CheckCircle2, XCircle, AlertTriangle } from 'lucide-react';
+import { motionSprings } from '@/lib/motion/tokens';
 
 export type BookingStatus = 'requested' | 'accepted' | 'in-progress' | 'completed' | 'cancelled' | 'rejected';
 
@@ -23,7 +25,7 @@ export function BookingTimeline({ status, paymentStatus, className = '' }: Booki
   if (status === 'cancelled' || status === 'rejected') {
     const isCancelled = status === 'cancelled';
     return (
-      <div className={`rounded-xl p-3.5 flex items-center gap-3 border ${
+      <div className={`rounded-2xl p-4 flex items-center gap-3.5 border ${
         isCancelled
           ? 'bg-muted/40 border-border text-muted-foreground'
           : 'bg-red-500/10 border-red-500/20 text-red-600'
@@ -37,10 +39,10 @@ export function BookingTimeline({ status, paymentStatus, className = '' }: Booki
           <p className="font-bold">
             {isCancelled ? 'Booking Cancelled by Customer' : 'Booking Declined by Technician'}
           </p>
-          <p className="text-[11px] opacity-80 mt-0.5">
+          <p className="text-[11px] opacity-80 mt-0.5 leading-relaxed">
             {isCancelled
-              ? 'This repair request was withdrawn. You may book another service at any time.'
-              : 'The technician is unavailable for this timeslot. Please select another certified tech.'}
+              ? 'This repair request was withdrawn. Zero charge has occurred.'
+              : 'The technician is unavailable for this timeslot. Please select another certified pro.'}
           </p>
         </div>
       </div>
@@ -57,7 +59,7 @@ export function BookingTimeline({ status, paymentStatus, className = '' }: Booki
   const currentStep = stepOrder[status] || 1;
 
   return (
-    <div className={`space-y-3 ${className}`}>
+    <div className={`space-y-4 ${className}`}>
       <div className="grid grid-cols-4 gap-2 relative">
         {STEPS.map((s, index) => {
           const stepNumber = index + 1;
@@ -69,25 +71,31 @@ export function BookingTimeline({ status, paymentStatus, className = '' }: Booki
             <div key={s.key} className="flex flex-col items-center text-center relative">
               {/* Connector line behind icons */}
               {index < STEPS.length - 1 && (
-                <div
-                  className={`absolute top-4 left-1/2 w-full h-0.5 -z-0 transition-colors ${
-                    currentStep > stepNumber ? 'bg-emerald-500' : 'bg-muted'
-                  }`}
-                />
+                <div className="absolute top-4 left-1/2 w-full h-0.5 -z-0 bg-border">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: currentStep > stepNumber ? '100%' : '0%' }}
+                    transition={motionSprings.smooth}
+                    className="h-full bg-emerald-500"
+                  />
+                </div>
               )}
 
               {/* Icon circle */}
-              <div
-                className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition-all shadow-xs ${
+              <motion.div
+                initial={{ scale: 0.9 }}
+                animate={{ scale: isCurrent ? 1.05 : 1 }}
+                transition={motionSprings.snappy}
+                className={`relative z-10 flex h-9 w-9 items-center justify-center rounded-2xl text-xs font-bold transition-all shadow-xs ${
                   isDone
-                    ? 'bg-emerald-500 text-white'
+                    ? 'bg-emerald-600 text-white shadow-emerald-500/20'
                     : isCurrent
                     ? 'bg-[#F26A3D] text-white ring-4 ring-[#F26A3D]/20 animate-pulse'
-                    : 'bg-muted text-muted-foreground border border-border'
+                    : 'bg-card text-muted-foreground border border-border'
                 }`}
               >
                 <Icon className="h-4 w-4" />
-              </div>
+              </motion.div>
 
               {/* Text labels */}
               <span
@@ -110,15 +118,19 @@ export function BookingTimeline({ status, paymentStatus, className = '' }: Booki
       </div>
 
       {status === 'completed' && paymentStatus && (
-        <div className={`text-center text-[11px] font-semibold py-1 px-3 rounded-lg ${
-          paymentStatus === 'paid'
-            ? 'bg-emerald-500/10 text-emerald-700'
-            : 'bg-amber-500/10 text-amber-700'
-        }`}>
+        <motion.div
+          initial={{ opacity: 0, y: 5 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={`text-center text-xs font-bold py-2 px-4 rounded-xl border ${
+            paymentStatus === 'paid'
+              ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-700'
+              : 'bg-amber-500/10 border-amber-500/20 text-amber-700'
+          }`}
+        >
           {paymentStatus === 'paid'
-            ? '✓ Payment settled via Stripe — 90-Day Repair Warranty Active'
-            : '⚠ Repair completed — Awaiting Stripe payment from customer'}
-        </div>
+            ? '✓ Payment Settled via Stripe — 90-Day Parts & Workmanship Warranty Active'
+            : '⚠ Repair Work Completed — Awaiting Customer Stripe Payment'}
+        </motion.div>
       )}
     </div>
   );

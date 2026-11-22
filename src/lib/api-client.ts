@@ -56,7 +56,7 @@ export async function apiClient<T = any>(
 
   // Capture auth token if returned via custom header
   if (typeof window !== 'undefined') {
-    const authJwt = response.headers.get('set-auth-jwt');
+    const authJwt = response.headers.get('set-auth-token') || response.headers.get('set-auth-jwt');
     if (authJwt) {
       localStorage.setItem('fixmate_token', authJwt);
     }

@@ -83,9 +83,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       throw new Error(data?.message || data?.error || 'Invalid email or password.');
     }
 
-    // Capture token from set-auth-jwt header or response body
-    const jwtHeader = res.headers.get('set-auth-jwt');
-    const receivedToken = jwtHeader || data?.token || data?.session?.token;
+    // Capture token from set-auth-token or set-auth-jwt header or response body
+    const tokenHeader = res.headers.get('set-auth-token') || res.headers.get('set-auth-jwt');
+    const receivedToken = tokenHeader || data?.token || data?.session?.token;
 
     if (receivedToken) {
       localStorage.setItem('fixmate_token', receivedToken);
@@ -127,8 +127,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       throw new Error(data?.message || data?.error || 'Registration failed.');
     }
 
-    const jwtHeader = res.headers.get('set-auth-jwt');
-    const receivedToken = jwtHeader || data?.token || data?.session?.token;
+    const tokenHeader = res.headers.get('set-auth-token') || res.headers.get('set-auth-jwt');
+    const receivedToken = tokenHeader || data?.token || data?.session?.token;
 
     if (receivedToken) {
       localStorage.setItem('fixmate_token', receivedToken);

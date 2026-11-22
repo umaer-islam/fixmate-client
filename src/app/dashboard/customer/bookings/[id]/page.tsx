@@ -7,6 +7,7 @@ import { api } from '@/lib/api-client';
 import { DashboardShell } from '@/components/dashboard/dashboard-shell';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { BookingTimeline } from '@/components/dashboard/booking-timeline';
 import { toast } from 'sonner';
 import {
   Calendar,
@@ -172,54 +173,13 @@ export default function CustomerBookingDetailPage() {
     >
       {/* Lifecycle Progress Stepper */}
       <div className="bg-white rounded-2xl border border-graphite/10 p-6 shadow-xs">
-        <h2 className="text-xs font-bold text-graphite-light uppercase tracking-wider mb-6">
+        <h2 className="text-xs font-bold text-graphite-light uppercase tracking-wider mb-4">
           Repair Lifecycle Status
         </h2>
-
-        {booking.status === 'cancelled' || booking.status === 'rejected' ? (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-700">
-            <XCircle className="w-6 h-6 flex-shrink-0" />
-            <div>
-              <p className="font-bold text-sm capitalize">This booking was {booking.status}</p>
-              <p className="text-xs text-red-600">
-                {booking.status === 'cancelled'
-                  ? 'You cancelled this request.'
-                  : 'The technician was unable to accept this request at this time.'}
-              </p>
-            </div>
-          </div>
-        ) : (
-          <div className="relative">
-            <div className="grid grid-cols-4 gap-2 text-center">
-              {steps.map((step, idx) => {
-                const isPassed = currentStep >= idx;
-                const isCurrent = currentStep === idx;
-                return (
-                  <div key={step.key} className="flex flex-col items-center">
-                    <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm mb-2 transition-all ${
-                        isCurrent
-                          ? 'bg-repair-orange text-white ring-4 ring-repair-orange/20'
-                          : isPassed
-                          ? 'bg-emerald-600 text-white'
-                          : 'bg-ivory border border-graphite/20 text-graphite/40'
-                      }`}
-                    >
-                      {isPassed && !isCurrent ? <CheckCircle2 className="w-5 h-5" /> : idx + 1}
-                    </div>
-                    <span
-                      className={`text-xs font-bold ${
-                        isCurrent ? 'text-repair-orange' : isPassed ? 'text-graphite' : 'text-graphite/40'
-                      }`}
-                    >
-                      {step.label}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
+        <BookingTimeline
+          status={booking.status}
+          paymentStatus={booking.paymentStatus}
+        />
       </div>
 
       {/* Main Details Grid */}

@@ -155,8 +155,20 @@ function ImageFan({
               src={src}
               alt={imageAlts?.[i] ?? 'FixMate certified repair showcase'}
               decoding="async"
+              onError={(e) => {
+                // Verified high-res fallback image if source is unreachable
+                (e.target as HTMLImageElement).src =
+                  'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80';
+              }}
               className="size-full object-cover transition-transform duration-500 hover:scale-105"
             />
+            {imageAlts?.[i] && (
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-3 pt-6 pointer-events-none">
+                <span className="text-[10px] sm:text-[11px] font-bold text-white tracking-wide drop-shadow-xs line-clamp-1">
+                  {imageAlts[i]}
+                </span>
+              </div>
+            )}
           </motion.div>
         );
       })}

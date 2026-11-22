@@ -54,13 +54,41 @@ interface ServiceItem {
 }
 
 const CATEGORIES = [
-  { name: 'Smartphone', icon: Smartphone, count: 'Screen, Battery & Port', color: 'bg-rose-500/10 text-rose-600', border: 'hover:border-rose-300' },
-  { name: 'Laptop & PC', icon: Laptop, count: 'Logic Board, SSD & Screen', color: 'bg-blue-500/10 text-blue-600', border: 'hover:border-blue-300' },
-  { name: 'AC', icon: Wind, count: 'Compressor, Gas & PCB', color: 'bg-sky-500/10 text-sky-600', border: 'hover:border-sky-300' },
-  { name: 'Refrigerator', icon: Refrigerator, count: 'Cooling, Thermostat & Gas', color: 'bg-amber-500/10 text-amber-600', border: 'hover:border-amber-300' },
-  { name: 'TV', icon: Tv, count: 'OLED/LED Panels & Power', color: 'bg-purple-500/10 text-purple-600', border: 'hover:border-purple-300' },
-  { name: 'Washing Machine', icon: Disc, count: 'Motor, Drum & Drainage', color: 'bg-emerald-500/10 text-emerald-600', border: 'hover:border-emerald-300' },
-  { name: 'Electrical', icon: Zap, count: 'Wiring, Breakers & Load', color: 'bg-yellow-500/10 text-yellow-600', border: 'hover:border-yellow-300' },
+  {
+    name: 'Smartphone',
+    icon: Smartphone,
+    tagline: 'Screen, Battery & Port',
+  },
+  {
+    name: 'Laptop & PC',
+    icon: Laptop,
+    tagline: 'Logic Board, SSD & RAM',
+  },
+  {
+    name: 'AC',
+    icon: Wind,
+    tagline: 'Compressor, Gas & PCB',
+  },
+  {
+    name: 'Refrigerator',
+    icon: Refrigerator,
+    tagline: 'Cooling & Thermostats',
+  },
+  {
+    name: 'TV',
+    icon: Tv,
+    tagline: 'OLED Panels & Power',
+  },
+  {
+    name: 'Washing Machine',
+    icon: Disc,
+    tagline: 'Motor, Drum & Drainage',
+  },
+  {
+    name: 'Electrical',
+    icon: Zap,
+    tagline: 'Wiring & Circuit Breakers',
+  },
 ];
 
 export default function HomePage() {
@@ -107,14 +135,14 @@ export default function HomePage() {
           description="Connect with vetted local technicians across smartphones, laptops, AC units, and major household appliances. Inspect the completed repair first, then pay securely through Stripe with an authoritative 90-Day Warranty."
           socialProof="Trusted by 14,800+ completed repairs • 4.9/5.0 Customer Rating • Stripe Escrow Safe"
           images={[
-            'https://images.unsplash.com/photo-1597740985671-2a8a3b80532e?auto=format&fit=crop&w=800&q=80',
+            'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?auto=format&fit=crop&w=800&q=80',
             'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80',
-            'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=800&q=80',
+            'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=800&q=80',
           ]}
           imageAlts={[
-            'Micro-soldering and logic board circuitry repair',
-            'Certified diagnostics and precision hardware testing',
-            'Home appliance compressor and electronics restoration',
+            'Smartphone Screen & Digitizer Calibration',
+            'Circuit Board Micro-Soldering & Diagnostics',
+            'AC & Major Home Appliance Restoration',
           ]}
           animation="subtle"
           primaryCTA={{
@@ -235,49 +263,61 @@ export default function HomePage() {
         </section>
 
         {/* =================================================================== */}
-        {/* REPAIR CATEGORIES SPECTRUM */}
+        {/* REPAIR CATEGORIES SPECTRUM (CLEAN & MINIMAL 7-CATEGORY GRID) */}
         {/* =================================================================== */}
-        <section className="py-20 border-b border-border bg-[#F5F3EE]/40">
+        <section className="py-20 border-b border-border bg-[#F5F3EE]">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <FadeIn direction="up">
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-12">
-                <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-[#F26A3D]">
-                    7 Device Categories
-                  </span>
-                  <h2 className="text-3xl sm:text-4xl font-extrabold text-[#202522] font-heading mt-1">
-                    Specialized Repair Categories
+              <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-10">
+                <div className="space-y-2">
+                  <div className="inline-flex items-center gap-2 rounded-full bg-[#202522]/5 px-3 py-1 text-xs font-bold text-[#202522]">
+                    <Wrench className="h-3.5 w-3.5 text-[#F26A3D]" />
+                    <span>Specialized Hardware Disciplines</span>
+                  </div>
+                  <h2 className="text-3xl sm:text-4xl font-extrabold text-[#202522] tracking-tight">
+                    7 Core Repair Categories
                   </h2>
+                  <p className="text-xs sm:text-sm text-muted-foreground max-w-xl">
+                    Select your equipment category to browse verified, background-checked technicians with guaranteed turnaround times.
+                  </p>
                 </div>
                 <Link href="/services">
-                  <MotionButton variant="outline" size="sm">
+                  <MotionButton variant="outline" size="sm" className="bg-card hover:bg-[#202522] hover:text-white transition-colors">
                     <span>View All Services</span>
-                    <ChevronRight className="h-3.5 w-3.5" />
+                    <ArrowRight className="h-3.5 w-3.5" />
                   </MotionButton>
                 </Link>
               </div>
             </FadeIn>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {/* Clean, balanced 7-column grid on desktop, 3-4 col on tablet, 2 col on mobile */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3 sm:gap-4">
               {CATEGORIES.map((cat, idx) => {
                 const Icon = cat.icon;
                 return (
-                  <FadeIn key={idx} direction="up" delay={0.06 * idx}>
-                    <Link href={`/services?category=${encodeURIComponent(cat.name)}`}>
-                      <SpotlightCard className="flex items-center justify-between p-5 bg-card hover:border-[#F26A3D]/50 cursor-pointer">
-                        <div className="flex items-center gap-4">
-                          <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${cat.color}`}>
-                            <Icon className="h-6 w-6" />
+                  <FadeIn key={cat.name} direction="up" delay={0.04 * idx}>
+                    <Link
+                      href={`/services?category=${encodeURIComponent(cat.name)}`}
+                      className="group flex flex-col justify-between h-full rounded-2xl border border-border/80 bg-card p-4 transition-all duration-300 hover:-translate-y-1 hover:border-[#F26A3D]/40 hover:shadow-md cursor-pointer"
+                    >
+                      <div>
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#202522]/5 text-[#202522] transition-colors duration-300 group-hover:bg-[#F26A3D] group-hover:text-white">
+                            <Icon className="h-5 w-5" />
                           </div>
-                          <div>
-                            <h3 className="text-base font-bold text-foreground">
-                              {cat.name}
-                            </h3>
-                            <p className="text-xs text-muted-foreground mt-0.5">{cat.count}</p>
-                          </div>
+                          <ChevronRight className="h-4 w-4 text-muted-foreground/30 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-[#F26A3D]" />
                         </div>
-                        <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-[#F26A3D] transition-transform" />
-                      </SpotlightCard>
+                        <h3 className="text-sm font-bold text-[#202522] group-hover:text-[#F26A3D] transition-colors">
+                          {cat.name}
+                        </h3>
+                        <p className="text-[11px] text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
+                          {cat.tagline}
+                        </p>
+                      </div>
+                      <div className="mt-4 pt-3 border-t border-border/40 flex items-center text-[10px] font-bold text-[#F26A3D] group-hover:underline">
+                        <span>Browse Repairs</span>
+                        <ArrowRight className="h-3 w-3 ml-1" />
+                      </div>
                     </Link>
                   </FadeIn>
                 );

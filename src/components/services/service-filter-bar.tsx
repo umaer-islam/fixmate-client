@@ -5,6 +5,7 @@ import { motion } from 'motion/react';
 import { Search, RotateCcw, SlidersHorizontal, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { BrandSelect } from '@/components/ui/dropdown';
 import { motionSprings, buttonTapSpring } from '@/lib/motion/tokens';
 
 export const SERVICE_CATEGORIES = [
@@ -79,34 +80,24 @@ export function ServiceFilterBar({
 
         {/* Service Mode Dropdown */}
         <div className="md:col-span-3">
-          <select
+          <BrandSelect
             value={serviceMode}
-            onChange={(e) => onServiceModeChange(e.target.value)}
+            onChange={onServiceModeChange}
+            options={SERVICE_MODES}
+            placeholder="All Modes"
             aria-label="Filter by Service Mode"
-            className="flex h-10 w-full rounded-xl border border-input bg-background px-3 py-2 text-xs sm:text-sm font-medium ring-offset-background focus:outline-none focus:ring-2 focus:ring-[#F26A3D]/40 cursor-pointer"
-          >
-            {SERVICE_MODES.map((m) => (
-              <option key={m.value} value={m.value}>
-                {m.label}
-              </option>
-            ))}
-          </select>
+          />
         </div>
 
         {/* Sort Dropdown */}
         <div className="md:col-span-3">
-          <select
+          <BrandSelect
             value={sort}
-            onChange={(e) => onSortChange(e.target.value)}
+            onChange={onSortChange}
+            options={SORT_OPTIONS}
+            placeholder="Sort by"
             aria-label="Sort Services"
-            className="flex h-10 w-full rounded-xl border border-input bg-background px-3 py-2 text-xs sm:text-sm font-medium ring-offset-background focus:outline-none focus:ring-2 focus:ring-[#F26A3D]/40 cursor-pointer"
-          >
-            {SORT_OPTIONS.map((s) => (
-              <option key={s.value} value={s.value}>
-                {s.label}
-              </option>
-            ))}
-          </select>
+          />
         </div>
 
         {/* Reset Filters Button */}

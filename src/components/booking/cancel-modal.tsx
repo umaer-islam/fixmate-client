@@ -4,6 +4,15 @@ import React, { useState } from 'react';
 import { AlertTriangle, Loader2 } from 'lucide-react';
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { BrandSelect } from '@/components/ui/dropdown';
+
+const CANCELLATION_REASONS = [
+  { value: 'Change of plans / No longer needed', label: 'Change of plans / No longer needed' },
+  { value: 'Issue resolved independently', label: 'Issue resolved independently' },
+  { value: 'Scheduling conflict with preferred date', label: 'Scheduling conflict with preferred date' },
+  { value: 'Booked by mistake', label: 'Booked by mistake' },
+  { value: 'Other reason', label: 'Other reason' },
+];
 
 export interface CancelBookingModalProps {
   isOpen: boolean;
@@ -60,22 +69,12 @@ export function CancelBookingModal({
           </div>
         )}
 
-        <div className="space-y-1.5">
-          <label className="text-xs font-semibold text-foreground block">
-            Reason for cancellation
-          </label>
-          <select
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            className="w-full rounded-xl border border-input bg-background p-2.5 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-          >
-            <option value="Change of plans / No longer needed">Change of plans / No longer needed</option>
-            <option value="Issue resolved independently">Issue resolved independently</option>
-            <option value="Scheduling conflict with preferred date">Scheduling conflict with preferred date</option>
-            <option value="Booked by mistake">Booked by mistake</option>
-            <option value="Other reason">Other reason</option>
-          </select>
-        </div>
+        <BrandSelect
+          label="Reason for cancellation"
+          value={reason}
+          onChange={setReason}
+          options={CANCELLATION_REASONS}
+        />
 
         <div className="rounded-xl bg-amber-500/10 border border-amber-500/20 p-3 text-[11px] text-amber-800 space-y-1">
           <p className="font-bold">Zero-Penalty Guarantee:</p>

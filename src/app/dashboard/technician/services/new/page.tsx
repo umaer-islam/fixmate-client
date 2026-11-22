@@ -8,6 +8,7 @@ import { api } from '@/lib/api-client';
 import { DashboardShell } from '@/components/dashboard/dashboard-shell';
 import { MotionButton } from '@/components/motion/motion-button';
 import { Badge } from '@/components/ui/badge';
+import { BrandSelect } from '@/components/ui/dropdown';
 import { toast } from 'sonner';
 import {
   Wrench,
@@ -177,39 +178,21 @@ export default function NewServicePage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label className="block text-xs font-bold text-foreground uppercase tracking-wider">
-                  Category <span className="text-[#F26A3D]">*</span>
-                </label>
-                <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm text-foreground bg-background focus:outline-none focus:ring-2 focus:ring-[#F26A3D]/30 focus:border-[#F26A3D]"
-                >
-                  {CATEGORIES.map((cat) => (
-                    <option key={cat} value={cat}>
-                      {cat}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <BrandSelect
+                label="Category *"
+                value={category}
+                onChange={setCategory}
+                options={CATEGORIES.map((cat) => ({ value: cat, label: cat }))}
+                placeholder="Select category"
+              />
 
-              <div className="space-y-1.5">
-                <label className="block text-xs font-bold text-foreground uppercase tracking-wider">
-                  Service Mode <span className="text-[#F26A3D]">*</span>
-                </label>
-                <select
-                  value={serviceMode}
-                  onChange={(e) => setServiceMode(e.target.value)}
-                  className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm text-foreground bg-background focus:outline-none focus:ring-2 focus:ring-[#F26A3D]/30 focus:border-[#F26A3D]"
-                >
-                  {SERVICE_MODES.map((mode) => (
-                    <option key={mode.value} value={mode.value}>
-                      {mode.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <BrandSelect
+                label="Service Mode *"
+                value={serviceMode}
+                onChange={setServiceMode}
+                options={SERVICE_MODES}
+                placeholder="Select mode"
+              />
             </div>
 
             <div className="space-y-1.5">

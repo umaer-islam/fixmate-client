@@ -6,6 +6,7 @@ import { useAuth } from '@/providers/auth-provider';
 import { api } from '@/lib/api-client';
 import { toast } from 'sonner';
 import { Dialog, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { BrandDatePicker } from '@/components/ui/date-picker';
 import { MotionButton } from '@/components/motion/motion-button';
 import { Calendar, MapPin, Phone, AlertCircle, Loader2, CheckCircle2, Clock, ShieldCheck } from 'lucide-react';
 
@@ -148,20 +149,15 @@ export function BookingModal({ service, isOpen, onClose, onSuccess }: BookingMod
           </div>
         </div>
 
-        {/* Preferred Date */}
-        <div className="space-y-1.5">
-          <label className="block text-xs font-bold text-foreground uppercase tracking-wider">
-            Preferred Date <span className="text-[#F26A3D]">*</span>
-          </label>
-          <input
-            type="date"
-            min={todayStr}
-            value={preferredDate}
-            onChange={(e) => setPreferredDate(e.target.value)}
-            required
-            className="w-full px-3.5 py-2.5 border border-border rounded-xl text-sm text-foreground bg-background focus:outline-none focus:ring-2 focus:ring-[#F26A3D]/30 focus:border-[#F26A3D]"
-          />
-        </div>
+        {/* Preferred Date with Customized Brand DatePicker */}
+        <BrandDatePicker
+          label="Preferred Appointment Date"
+          value={preferredDate}
+          onChange={setPreferredDate}
+          minDate={todayStr}
+          required
+          placeholder="Select an appointment date"
+        />
 
         {/* Customer Phone */}
         <div className="space-y-1.5">

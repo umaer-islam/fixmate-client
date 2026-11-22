@@ -17,13 +17,13 @@ import {
 } from 'lucide-react';
 
 const CATEGORIES = [
-  'Smartphones',
-  'Laptops & Computers',
-  'Home Appliances',
-  'Audio & Gaming',
-  'Televisions & Displays',
-  'Power Tools',
-  'Smart Home & IoT',
+  'Smartphone',
+  'Laptop & PC',
+  'AC',
+  'Refrigerator',
+  'TV',
+  'Washing Machine',
+  'Electrical',
 ];
 
 export default function NewServicePage() {
@@ -35,7 +35,7 @@ export default function NewServicePage() {
   const [image, setImage] = useState('');
   const [basePrice, setBasePrice] = useState('');
   const [estimatedDuration, setEstimatedDuration] = useState('');
-  const [serviceMode, setServiceMode] = useState<'onsite' | 'remote' | 'both'>('onsite');
+  const [serviceMode, setServiceMode] = useState<string>('Home Visit');
   const [serviceArea, setServiceArea] = useState('');
   const [turnaroundTime, setTurnaroundTime] = useState('');
 
@@ -183,12 +183,11 @@ export default function NewServicePage() {
               </label>
               <select
                 value={serviceMode}
-                onChange={(e) => setServiceMode(e.target.value as any)}
-                className="w-full px-3.5 py-2.5 border border-graphite/20 rounded-xl text-sm text-graphite bg-white focus:outline-none focus:ring-2 focus:ring-repair-orange/30 focus:border-repair-orange capitalize"
+                onChange={(e) => setServiceMode(e.target.value)}
+                className="w-full px-3.5 py-2.5 border border-graphite/20 rounded-xl text-sm text-graphite bg-white focus:outline-none focus:ring-2 focus:ring-repair-orange/30 focus:border-repair-orange"
               >
-                <option value="onsite">On-Site (Visit customer location)</option>
-                <option value="remote">Remote (Drop-off / Mail-in / Virtual)</option>
-                <option value="both">Both (Onsite & Remote available)</option>
+                <option value="Home Visit">Home Visit</option>
+                <option value="Shop Drop-off">Shop Drop-off</option>
               </select>
             </div>
           </div>

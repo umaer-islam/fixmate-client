@@ -14,7 +14,7 @@ interface ServiceSummary {
   category: string;
   basePrice: number;
   estimatedDuration: string;
-  serviceMode: 'onsite' | 'remote' | 'both';
+  serviceMode: string;
   technicianName?: string;
 }
 

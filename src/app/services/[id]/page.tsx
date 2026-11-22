@@ -30,7 +30,7 @@ interface ServiceDetail {
   image: string;
   basePrice: number;
   estimatedDuration: string;
-  serviceMode: 'onsite' | 'remote' | 'both';
+  serviceMode: string;
   serviceArea?: string;
   turnaroundTime?: string;
   isAvailable: boolean;
@@ -164,10 +164,10 @@ export default function ServiceDetailPage() {
                   {service.category}
                 </Badge>
                 <Badge
-                  variant={service.serviceMode === 'onsite' ? 'info' : service.serviceMode === 'remote' ? 'warning' : 'success'}
+                  variant={service.serviceMode.toLowerCase().includes('visit') || service.serviceMode === 'onsite' ? 'info' : 'warning'}
                   className="capitalize font-semibold text-xs"
                 >
-                  {service.serviceMode} Repair
+                  {service.serviceMode}
                 </Badge>
               </div>
 

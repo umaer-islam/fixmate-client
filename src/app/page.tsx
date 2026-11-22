@@ -8,6 +8,9 @@ import {
   Laptop,
   Refrigerator,
   Tv,
+  Wind,
+  Disc,
+  Zap,
   Gamepad2,
   Cpu,
   ShieldCheck,
@@ -33,7 +36,7 @@ interface ServiceItem {
   title: string;
   description: string;
   category: string;
-  serviceMode: 'onsite' | 'remote' | 'both';
+  serviceMode: string;
   basePrice: number;
   estimatedDuration: string;
   image: string;
@@ -42,12 +45,13 @@ interface ServiceItem {
 }
 
 const CATEGORIES = [
-  { name: 'Smartphones', icon: Smartphone, count: 'Screen, Battery & Port', color: 'bg-rose-50 text-rose-600' },
-  { name: 'Laptops', icon: Laptop, count: 'Logic Board & Screen', color: 'bg-blue-50 text-blue-600' },
-  { name: 'Home Appliances', icon: Refrigerator, count: 'Fridges, Washers & Ovens', color: 'bg-amber-50 text-amber-600' },
-  { name: 'Smart TVs', icon: Tv, count: 'Panels & Power Boards', color: 'bg-purple-50 text-purple-600' },
-  { name: 'Gaming Consoles', icon: Gamepad2, count: 'HDMI, Thermal & Drives', color: 'bg-emerald-50 text-emerald-600' },
-  { name: 'Smart Home & IoT', icon: Cpu, count: 'Thermostats & Cameras', color: 'bg-indigo-50 text-indigo-600' },
+  { name: 'Smartphone', icon: Smartphone, count: 'Screen, Battery & Port', color: 'bg-rose-50 text-rose-600' },
+  { name: 'Laptop & PC', icon: Laptop, count: 'Logic Board & Screen', color: 'bg-blue-50 text-blue-600' },
+  { name: 'AC', icon: Wind, count: 'Compressor, Gas & PCB', color: 'bg-sky-50 text-sky-600' },
+  { name: 'Refrigerator', icon: Refrigerator, count: 'Cooling, Thermostat & Gas', color: 'bg-amber-50 text-amber-600' },
+  { name: 'TV', icon: Tv, count: 'Panels & Power Boards', color: 'bg-purple-50 text-purple-600' },
+  { name: 'Washing Machine', icon: Disc, count: 'Motor, Drum & Drainage', color: 'bg-emerald-50 text-emerald-600' },
+  { name: 'Electrical', icon: Zap, count: 'Wiring, Breakers & Load', color: 'bg-yellow-50 text-yellow-600' },
 ];
 
 export default function HomePage() {

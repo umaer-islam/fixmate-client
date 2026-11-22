@@ -27,7 +27,7 @@ interface ServiceItem {
   title: string;
   description: string;
   category: string;
-  serviceMode: 'onsite' | 'remote' | 'both';
+  serviceMode: string;
   basePrice: number;
   estimatedDuration: string;
   image: string;
@@ -37,19 +37,19 @@ interface ServiceItem {
 
 const CATEGORIES = [
   'All',
-  'Smartphones',
-  'Laptops',
-  'Home Appliances',
-  'Smart TVs',
-  'Gaming Consoles',
-  'Smart Home & IoT',
+  'Smartphone',
+  'Laptop & PC',
+  'AC',
+  'Refrigerator',
+  'TV',
+  'Washing Machine',
+  'Electrical',
 ];
 
 const MODES = [
   { label: 'All Modes', value: '' },
-  { label: 'On-site Visit', value: 'onsite' },
-  { label: 'Remote / Online', value: 'remote' },
-  { label: 'Both Supported', value: 'both' },
+  { label: 'Home Visit', value: 'Home Visit' },
+  { label: 'Shop Drop-off', value: 'Shop Drop-off' },
 ];
 
 const SORT_OPTIONS = [

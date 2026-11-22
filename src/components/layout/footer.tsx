@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { buttonTapSpring, cardHoverSpring } from '@/lib/motion/tokens';
+import { LiquidChrome } from '@/components/ui/liquid-chrome/liquid-chrome';
 
 export function Footer() {
   const [emailInput, setEmailInput] = useState('');
@@ -64,8 +65,18 @@ export function Footer() {
 
   return (
     <footer className="relative overflow-hidden bg-[#181C1A] text-white border-t border-white/10">
+      {/* React Bits LiquidChrome WebGL2 Fluid Metallic Background with Brand Colors */}
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden opacity-35">
+        <LiquidChrome
+          color="#F26A3D"
+          speed={0.15}
+          amplitude={0.25}
+          interactive={true}
+        />
+      </div>
+
       {/* Background Ambient Glow (ReactBits Inspired) */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-30">
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden opacity-25">
         <div className="absolute -top-40 left-1/4 h-96 w-96 rounded-full bg-[#F26A3D]/20 blur-3xl" />
         <div className="absolute bottom-0 right-10 h-80 w-80 rounded-full bg-emerald-500/10 blur-3xl" />
       </div>

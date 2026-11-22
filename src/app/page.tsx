@@ -426,33 +426,110 @@ export default function HomePage() {
         </section>
 
         {/* =================================================================== */}
-        {/* CALL TO ACTION */}
+        {/* CALL TO ACTION (REACT BITS CLEAN, MINIMAL & ANIMATED REDESIGN) */}
         {/* =================================================================== */}
-        <section className="bg-[#202522] py-20 text-white text-center relative overflow-hidden">
-          <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 space-y-6 relative z-10">
+        <section className="py-20 sm:py-28 bg-[#F5F3EE] relative overflow-hidden">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
             <FadeIn direction="up">
-              <span className="text-xs font-bold uppercase tracking-widest text-[#F26A3D]">
-                Get Started Today
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-black font-heading text-white mt-2">
-                Ready to Repair Your Device with Zero Risk?
-              </h2>
-              <p className="text-sm text-white/70 max-w-xl mx-auto leading-relaxed mt-3">
-                Join thousands of customers who rely on FixMate for transparent pricing, certified diagnostics, and post-repair Stripe protection.
-              </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                <Link href="/services">
-                  <MotionButton variant="primary" size="lg" className="w-full sm:w-auto shadow-lg">
-                    <span>Find a Technician Now</span>
-                    <ArrowRight className="h-4 w-4" />
-                  </MotionButton>
-                </Link>
-                <Link href="/sign-up">
-                  <MotionButton variant="outline" size="lg" className="w-full sm:w-auto border-white/20 text-white hover:bg-white/10">
-                    <span>Become a FixMate Pro</span>
-                  </MotionButton>
-                </Link>
-              </div>
+              <SpotlightCard
+                spotlightColor="rgba(242, 106, 61, 0.16)"
+                className="relative rounded-3xl border border-white/10 bg-[#161A18] text-white p-8 sm:p-14 lg:p-16 overflow-hidden shadow-2xl text-center"
+              >
+                {/* Ambient React Bits Glowing Background Orbs */}
+                <div className="pointer-events-none absolute -top-32 -left-32 h-80 w-80 rounded-full bg-[#F26A3D]/25 blur-3xl" />
+                <div className="pointer-events-none absolute -bottom-32 -right-32 h-80 w-80 rounded-full bg-emerald-500/15 blur-3xl" />
+
+                {/* Subtle Geometric Dot Grid Pattern */}
+                <div
+                  className="pointer-events-none absolute inset-0 opacity-[0.04]"
+                  style={{
+                    backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',
+                    backgroundSize: '24px 24px',
+                  }}
+                />
+
+                <div className="relative z-10 max-w-3xl mx-auto space-y-6">
+                  {/* Shimmer Pill Badge */}
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                    className="inline-flex items-center gap-2 rounded-full border border-[#F26A3D]/30 bg-[#F26A3D]/10 px-4 py-1.5 text-xs font-bold text-[#F26A3D] backdrop-blur-md cursor-default"
+                  >
+                    <Sparkles className="h-3.5 w-3.5 animate-spin text-[#F26A3D]" style={{ animationDuration: '8s' }} />
+                    <span className="tracking-wide">Get Started Today</span>
+                    <span className="text-white/30">•</span>
+                    <span className="text-emerald-400 font-semibold">100% Risk Free</span>
+                  </motion.div>
+
+                  {/* Headline with High-Contrast Typography & Brand Gradient */}
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-black font-heading text-white tracking-tight leading-[1.12]">
+                    Ready to Repair Your Device with{' '}
+                    <span className="bg-gradient-to-r from-[#F26A3D] via-[#FF9266] to-[#F26A3D] bg-clip-text text-transparent">
+                      Zero Risk
+                    </span>
+                    ?
+                  </h2>
+
+                  {/* Clean Subtitle */}
+                  <p className="text-xs sm:text-sm text-white/75 max-w-xl mx-auto leading-relaxed">
+                    Join over 14,800 device owners who trust FixMate for transparent pricing, certified on-site diagnostic tests, and post-repair Stripe protection.
+                  </p>
+
+                  {/* Interactive Perks Strip (ReactBits / Motion Brew) */}
+                  <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 pt-2">
+                    {[
+                      { icon: ShieldCheck, label: '90-Day Parts & Labor Warranty', color: 'text-emerald-400' },
+                      { icon: CreditCard, label: 'Pay Only After Completion', color: 'text-[#F26A3D]' },
+                      { icon: CheckCircle2, label: 'Zero Upfront Diagnostic Fee', color: 'text-amber-400' },
+                    ].map((perk, i) => {
+                      const Icon = perk.icon;
+                      return (
+                        <motion.div
+                          key={i}
+                          whileHover={{ y: -2, scale: 1.02 }}
+                          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                          className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 text-[11px] font-semibold text-white/90 backdrop-blur-sm shadow-xs"
+                        >
+                          <Icon className={`h-3.5 w-3.5 ${perk.color}`} />
+                          <span>{perk.label}</span>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Dual Action CTA Buttons */}
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-4">
+                    <Link href="/services" className="w-full sm:w-auto">
+                      <motion.div whileHover={{ scale: 1.03 }} whileTap={buttonTapSpring}>
+                        <Button
+                          size="lg"
+                          className="w-full sm:w-auto bg-[#F26A3D] hover:bg-[#F26A3D]/90 text-white font-bold text-sm rounded-2xl px-7 py-6 shadow-xl shadow-[#F26A3D]/25 cursor-pointer group"
+                        >
+                          <span>Explore Repair Catalog</span>
+                          <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+                        </Button>
+                      </motion.div>
+                    </Link>
+
+                    <Link href="/sign-up" className="w-full sm:w-auto">
+                      <motion.div whileHover={{ scale: 1.03 }} whileTap={buttonTapSpring}>
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          className="w-full sm:w-auto border-white/20 bg-white/5 hover:bg-white/10 text-white font-bold text-sm rounded-2xl px-7 py-6 backdrop-blur-sm cursor-pointer"
+                        >
+                          <span>Become a Verified Pro</span>
+                        </Button>
+                      </motion.div>
+                    </Link>
+                  </div>
+
+                  {/* Micro Trust Proof */}
+                  <p className="text-[11px] text-white/40 pt-2 font-medium">
+                    No credit card required to request • Cancel anytime before technician acceptance
+                  </p>
+                </div>
+              </SpotlightCard>
             </FadeIn>
           </div>
         </section>

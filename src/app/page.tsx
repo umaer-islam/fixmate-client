@@ -31,6 +31,7 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { api } from '@/lib/api-client';
 import { ServiceCard } from '@/components/services/service-card';
+import { Hero10 } from '@/components/ui/hero-10';
 import { SplitText } from '@/components/motion/split-text';
 import { AnimatedCounter } from '@/components/motion/animated-counter';
 import { SpotlightCard } from '@/components/motion/spotlight-card';
@@ -88,142 +89,77 @@ export default function HomePage() {
 
       <main className="flex-1">
         {/* =================================================================== */}
-        {/* HERO SECTION */}
+        {/* HERO SECTION (HERO10 FAN SHOWCASE) */}
         {/* =================================================================== */}
-        <section className="relative overflow-hidden border-b border-border/60 bg-gradient-to-b from-[#F5F3EE] via-[#F5F3EE] to-background py-16 sm:py-24 lg:py-28">
+        <Hero10
+          badge={
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-bold text-[#202522] shadow-xs">
+              <span className="flex h-2 w-2 rounded-full bg-[#F26A3D] animate-ping" />
+              <span className="flex h-2 w-2 rounded-full bg-[#F26A3D]" />
+              <span className="tracking-wide">FixMate Verified Repair Network</span>
+              <span className="hidden sm:inline text-muted-foreground">•</span>
+              <span className="hidden sm:inline text-emerald-600 font-semibold">Zero Upfront Fee</span>
+            </div>
+          }
+          title="Precision Repair for Smart Devices"
+          titleLine2Prefix="&"
+          titleHighlight="Home Appliances"
+          description="Connect with vetted local technicians across smartphones, laptops, AC units, and major household appliances. Inspect the completed repair first, then pay securely through Stripe with an authoritative 90-Day Warranty."
+          socialProof="Trusted by 14,800+ completed repairs • 4.9/5.0 Customer Rating • Stripe Escrow Safe"
+          images={[
+            'https://images.unsplash.com/photo-1597740985671-2a8a3b80532e?auto=format&fit=crop&w=800&q=80',
+            'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80',
+            'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=800&q=80',
+          ]}
+          imageAlts={[
+            'Micro-soldering and logic board circuitry repair',
+            'Certified diagnostics and precision hardware testing',
+            'Home appliance compressor and electronics restoration',
+          ]}
+          animation="subtle"
+          primaryCTA={{
+            ctaEnabled: true,
+            text: 'Explore Repair Services',
+            link: '/services',
+            variant: 'primary',
+            size: 'lg',
+          }}
+          secondaryCTA={{
+            ctaEnabled: true,
+            text: 'Join as Technician',
+            link: '/sign-up',
+            variant: 'outline',
+            size: 'lg',
+          }}
+        />
+
+        {/* Trust Metrics Bar */}
+        <section className="bg-card border-b border-border/80 py-8">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-              {/* Left Column Text */}
-              <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-                <FadeIn direction="down" delay={0.05}>
-                  <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-bold text-[#202522] shadow-xs">
-                    <span className="flex h-2 w-2 rounded-full bg-[#F26A3D] animate-ping" />
-                    <span className="flex h-2 w-2 rounded-full bg-[#F26A3D]" />
-                    <span className="tracking-wide">FixMate Verified Repair Network</span>
-                    <span className="hidden sm:inline text-muted-foreground">•</span>
-                    <span className="hidden sm:inline text-emerald-600 font-semibold">Zero Upfront Fee</span>
-                  </div>
-                </FadeIn>
-
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[#202522] font-heading leading-[1.08]">
-                  <SplitText text="Precision Repair for Smart Devices & Home Appliances" />
-                </h1>
-
-                <FadeIn direction="up" delay={0.25}>
-                  <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal">
-                    Connect with vetted local technicians across smartphones, laptops, AC units, and major household appliances. Inspect the completed repair first, then pay securely through Stripe with an authoritative <span className="font-bold text-[#202522]">90-Day Warranty</span>.
-                  </p>
-                </FadeIn>
-
-                {/* Hero CTAs */}
-                <FadeIn direction="up" delay={0.35}>
-                  <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-2">
-                    <Link href="/services">
-                      <MotionButton size="lg" variant="primary" className="w-full sm:w-auto shadow-md">
-                        <span>Explore Repair Services</span>
-                        <ArrowRight className="h-4 w-4" />
-                      </MotionButton>
-                    </Link>
-                    <Link href="/sign-up">
-                      <MotionButton size="lg" variant="outline" className="w-full sm:w-auto">
-                        <span>Join as Technician</span>
-                      </MotionButton>
-                    </Link>
-                  </div>
-                </FadeIn>
-
-                {/* Trust Metrics Bar */}
-                <FadeIn direction="up" delay={0.45}>
-                  <div className="grid grid-cols-3 gap-6 pt-8 border-t border-border/80 max-w-lg mx-auto lg:mx-0 text-left">
-                    <div>
-                      <p className="text-2xl sm:text-3xl font-black text-[#202522]">
-                        <AnimatedCounter value={14850} suffix="+" />
-                      </p>
-                      <p className="text-xs font-semibold text-muted-foreground mt-0.5">Repairs Completed</p>
-                    </div>
-                    <div>
-                      <p className="text-2xl sm:text-3xl font-black text-[#202522]">
-                        <AnimatedCounter value={4.9} decimals={1} suffix=" / 5" />
-                      </p>
-                      <p className="text-xs font-semibold text-muted-foreground mt-0.5">Customer Rating</p>
-                    </div>
-                    <div>
-                      <p className="text-2xl sm:text-3xl font-black text-[#202522]">
-                        <AnimatedCounter value={100} suffix="%" />
-                      </p>
-                      <p className="text-xs font-semibold text-muted-foreground mt-0.5">Stripe Escrow Safe</p>
-                    </div>
-                  </div>
-                </FadeIn>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+              <div>
+                <p className="text-2xl sm:text-3xl font-black text-[#202522]">
+                  <AnimatedCounter value={14850} suffix="+" />
+                </p>
+                <p className="text-xs font-semibold text-muted-foreground mt-0.5">Repairs Completed</p>
               </div>
-
-              {/* Right Column Workshop Card Preview */}
-              <div className="lg:col-span-5 relative">
-                <FadeIn direction="left" delay={0.2} distance={24}>
-                  <SpotlightCard className="mx-auto max-w-md shadow-xl bg-card border-border/80 p-6 space-y-5">
-                    <div className="flex items-center justify-between border-b border-border/70 pb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#202522] text-white shadow-xs">
-                          <Wrench className="h-6 w-6 text-[#F26A3D]" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-bold text-foreground">FixMate Guarantee</p>
-                          <p className="text-xs text-muted-foreground">Certified Diagnostic & Repair</p>
-                        </div>
-                      </div>
-                      <Badge variant="success" className="font-bold text-[11px]">
-                        Verified Tech
-                      </Badge>
-                    </div>
-
-                    <div className="space-y-3">
-                      <div className="flex items-start gap-3 rounded-2xl bg-muted/50 p-3.5 transition-colors hover:bg-muted/80">
-                        <div className="h-8 w-8 rounded-xl bg-emerald-500/10 flex items-center justify-center shrink-0 text-emerald-600">
-                          <ShieldCheck className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <p className="text-xs font-bold text-foreground">Zero Upfront Payment</p>
-                          <p className="text-[11px] text-muted-foreground leading-relaxed">
-                            Book your appointment without providing credit card details in advance.
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-3 rounded-2xl bg-muted/50 p-3.5 transition-colors hover:bg-muted/80">
-                        <div className="h-8 w-8 rounded-xl bg-blue-500/10 flex items-center justify-center shrink-0 text-blue-600">
-                          <Clock className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <p className="text-xs font-bold text-foreground">Home Visit or Shop Drop-off</p>
-                          <p className="text-[11px] text-muted-foreground leading-relaxed">
-                            Flexible service modes tailored to appliances and handheld electronics.
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-3 rounded-2xl bg-muted/50 p-3.5 transition-colors hover:bg-muted/80">
-                        <div className="h-8 w-8 rounded-xl bg-[#F26A3D]/10 flex items-center justify-center shrink-0 text-[#F26A3D]">
-                          <CreditCard className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <p className="text-xs font-bold text-foreground">Post-Repair Stripe Checkout</p>
-                          <p className="text-[11px] text-muted-foreground leading-relaxed">
-                            Inspect completed work first, then settle your digital invoice with one click.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="pt-2">
-                      <Link href="/services" className="block">
-                        <MotionButton variant="graphite" size="md" className="w-full">
-                          <span>Find a Repair Technician in Your Area</span>
-                          <ArrowRight className="h-3.5 w-3.5" />
-                        </MotionButton>
-                      </Link>
-                    </div>
-                  </SpotlightCard>
-                </FadeIn>
+              <div>
+                <p className="text-2xl sm:text-3xl font-black text-[#202522]">
+                  <AnimatedCounter value={4.9} decimals={1} suffix=" / 5" />
+                </p>
+                <p className="text-xs font-semibold text-muted-foreground mt-0.5">Customer Rating</p>
+              </div>
+              <div>
+                <p className="text-2xl sm:text-3xl font-black text-[#202522]">
+                  <AnimatedCounter value={100} suffix="%" />
+                </p>
+                <p className="text-xs font-semibold text-muted-foreground mt-0.5">Stripe Escrow Safe</p>
+              </div>
+              <div>
+                <p className="text-2xl sm:text-3xl font-black text-[#F26A3D]">
+                  <AnimatedCounter value={90} suffix=" Days" />
+                </p>
+                <p className="text-xs font-semibold text-muted-foreground mt-0.5">Parts & Labor Warranty</p>
               </div>
             </div>
           </div>

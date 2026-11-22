@@ -11,12 +11,8 @@ import {
   Wind,
   Disc,
   Zap,
-  ShieldCheck,
-  CheckCircle2,
   ArrowRight,
   ChevronRight,
-  Lock,
-  Award,
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Navbar } from '@/components/layout/navbar';
@@ -116,7 +112,7 @@ export default function HomePage() {
           title="Precision Repair for Smart Devices"
           titleLine2Prefix="&"
           titleHighlight="Home Appliances"
-          description="Connect with vetted local technicians across smartphones, laptops, AC units, and household appliances. Inspect the completed repair first, then pay securely through Stripe with an authoritative 90-Day Warranty."
+          description="Connect with vetted local technicians across smartphones, laptops, AC units, and household appliances. Inspect the completed repair first, then pay securely through Stripe."
           images={[
             'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?auto=format&fit=crop&w=800&q=80',
             'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80',
@@ -168,9 +164,9 @@ export default function HomePage() {
               </div>
               <div>
                 <p className="text-2xl sm:text-3xl font-black text-[#F26A3D]">
-                  <AnimatedCounter value={90} suffix=" Days" />
+                  <AnimatedCounter value={99} suffix="%" />
                 </p>
-                <p className="text-xs font-semibold text-muted-foreground mt-0.5">Parts & Labor Warranty</p>
+                <p className="text-xs font-semibold text-muted-foreground mt-0.5">Verified Completion</p>
               </div>
             </div>
           </div>
@@ -212,7 +208,7 @@ export default function HomePage() {
                 {
                   step: '04',
                   title: 'Pay via Stripe',
-                  desc: 'Inspect the resolved repair, then pay securely through Stripe with 90-day warranty coverage.',
+                  desc: 'Inspect the resolved repair, then pay securely through Stripe with full customer protection.',
                 },
               ].map((item, idx) => (
                 <FadeIn key={idx} direction="up" delay={0.1 * idx}>
@@ -342,46 +338,6 @@ export default function HomePage() {
         </section>
 
         {/* =================================================================== */}
-        {/* 90-DAY WARRANTY GUARANTEE */}
-        {/* =================================================================== */}
-        <section className="py-20 border-b border-border bg-[#F5F3EE]/60">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="rounded-3xl border border-border/80 bg-card p-8 sm:p-12 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-              <div className="lg:col-span-8 space-y-4">
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-[#202522] font-heading">
-                  90-Day Parts & Labor Warranty on All Repairs
-                </h3>
-                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                  Every settled repair carries a 90-day guarantee against recurrence of the diagnosed defect. If your device exhibits the same issue within three months, your technician will re-inspect and remediate at no additional diagnostic fee.
-                </p>
-                <div className="flex flex-wrap items-center gap-5 pt-2 text-xs font-semibold text-foreground">
-                  <span className="flex items-center gap-1.5">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                    Genuine Tested Components
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <Lock className="h-4 w-4 text-emerald-600" />
-                    Stripe Escrow Protection
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <ShieldCheck className="h-4 w-4 text-emerald-600" />
-                    Verified Technicians
-                  </span>
-                </div>
-              </div>
-
-              <div className="lg:col-span-4 flex justify-center">
-                <div className="flex h-32 w-32 flex-col items-center justify-center rounded-3xl bg-[#202522] text-white p-4 shadow-xl text-center space-y-1">
-                  <Award className="h-7 w-7 text-[#F26A3D]" />
-                  <span className="text-2xl font-black">90 DAYS</span>
-                  <span className="text-[10px] text-white/70 uppercase tracking-widest font-bold">WARRANTY</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* =================================================================== */}
         {/* CALL TO ACTION */}
         {/* =================================================================== */}
         <section className="py-20 sm:py-28 bg-[#F5F3EE] relative overflow-hidden">
@@ -448,7 +404,7 @@ export default function HomePage() {
 
                   {/* Micro Reassurance */}
                   <p className="text-[11px] text-white/40 pt-1 font-medium">
-                    No upfront charges • Pay only after inspection and approval
+                    Transparent pricing • Certified local specialists • Stripe escrow protection
                   </p>
                 </div>
               </SpotlightCard>

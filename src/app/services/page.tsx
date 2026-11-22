@@ -141,7 +141,7 @@ function ServicesCatalog() {
             Explore Repair Services
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl">
-            Browse certified repair offerings from verified local technicians. Zero upfront payment required — inspect before you pay.
+            Browse certified repair offerings from verified local technicians with transparent pricing and secure Stripe protection.
           </p>
         </div>
       </FadeIn>

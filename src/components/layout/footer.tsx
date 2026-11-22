@@ -90,7 +90,7 @@ export function Footer() {
                 Got a broken device or faulty appliance?
               </h3>
               <p className="text-xs sm:text-sm text-white/70 max-w-xl">
-                Get priority repair diagnostics with zero upfront charge. Pay securely only after your hardware is completely restored.
+                Connect with certified local repair technicians. Transparent pricing and secure Stripe protection on every job.
               </p>
             </div>
 

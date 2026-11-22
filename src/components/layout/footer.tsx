@@ -119,8 +119,13 @@ export function Footer() {
         <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-white/50">
           <p>© {new Date().getFullYear()} FixMate Platform. All rights reserved.</p>
           <div className="flex items-center gap-6 mt-4 sm:mt-0">
-            <span>Assignment 09 Production Full-Stack</span>
-            <span>Category 006 · Smart Device & Appliance Repair</span>
+            <Link href="/terms" className="hover:text-white transition-colors">
+              Terms of Service
+            </Link>
+            <Link href="/privacy" className="hover:text-white transition-colors">
+              Privacy Policy
+            </Link>
+            <span>Assignment 09 Production</span>
           </div>
         </div>
       </div>

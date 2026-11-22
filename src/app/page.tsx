@@ -30,6 +30,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { api } from '@/lib/api-client';
+import { ServiceCard } from '@/components/services/service-card';
 
 interface ServiceItem {
   _id: string;
@@ -336,66 +337,7 @@ export default function HomePage() {
             ) : featuredServices.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {featuredServices.map((service) => (
-                  <Card key={service._id} className="overflow-hidden group hover:shadow-md transition-shadow">
-                    <div className="relative h-48 w-full bg-muted/60 overflow-hidden">
-                      {service.image ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={service.image}
-                          alt={service.title}
-                          className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center bg-muted">
-                          <Wrench className="h-8 w-8 text-muted-foreground" />
-                        </div>
-                      )}
-                      <div className="absolute top-3 right-3">
-                        <Badge variant="sage" className="capitalize font-semibold text-[11px]">
-                          {service.serviceMode}
-                        </Badge>
-                      </div>
-                      <div className="absolute top-3 left-3">
-                        <Badge variant="default" className="text-[11px]">
-                          {service.category}
-                        </Badge>
-                      </div>
-                    </div>
-
-                    <CardContent className="p-5 space-y-3">
-                      <div>
-                        <h3 className="font-bold text-base text-foreground line-clamp-1 group-hover:text-[#F26A3D] transition-colors">
-                          {service.title}
-                        </h3>
-                        <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
-                          {service.description}
-                        </p>
-                      </div>
-
-                      <div className="flex items-center justify-between text-xs text-muted-foreground pt-1 border-t border-border/60">
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-3.5 w-3.5" /> {service.estimatedDuration}
-                        </span>
-                        <span className="font-semibold text-foreground">
-                          Tech: {service.technicianName}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center justify-between pt-2">
-                        <div>
-                          <p className="text-[10px] uppercase font-bold text-muted-foreground">Starting At</p>
-                          <p className="text-xl font-black text-[#202522]">
-                            ${service.basePrice.toFixed(2)}
-                          </p>
-                        </div>
-                        <Link href={`/services/${service._id}`}>
-                          <Button size="sm" className="bg-[#F26A3D] hover:bg-[#F26A3D]/90 text-white font-semibold text-xs rounded-xl shadow-xs">
-                            View & Book
-                          </Button>
-                        </Link>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <ServiceCard key={service._id} service={service} />
                 ))}
               </div>
             ) : (

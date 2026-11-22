@@ -76,9 +76,12 @@ export default function NewServicePage() {
             image: base64Data,
           });
 
-          if (res.data?.url) {
-            setImage(res.data.url);
+          const uploadedUrl = res.data?.url || (res as any)?.url || (res as any)?.display_url;
+          if (uploadedUrl) {
+            setImage(uploadedUrl);
             toast.success('Service image uploaded successfully!');
+          } else {
+            toast.error('Failed to parse uploaded image.');
           }
         } catch (uploadErr: any) {
           toast.error(uploadErr?.message || 'Failed to upload image.');

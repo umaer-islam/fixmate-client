@@ -92,9 +92,12 @@ export default function SharedProfilePage() {
             image: base64Data,
           });
 
-          if (res.data?.url) {
-            setAvatarUrl(res.data.url);
+          const uploadedUrl = res.data?.url || (res as any)?.url || (res as any)?.display_url;
+          if (uploadedUrl) {
+            setAvatarUrl(uploadedUrl);
             toast.success('Avatar uploaded successfully!');
+          } else {
+            toast.error('Failed to parse uploaded image.');
           }
         } catch (uploadErr: any) {
           toast.error(uploadErr?.message || 'Failed to upload image.');

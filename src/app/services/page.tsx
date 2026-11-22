@@ -21,8 +21,9 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { api } from '@/lib/api-client';
+import { ServiceFilterBar } from '@/components/services/service-filter-bar';
 
-interface ServiceItem {
+export interface ServiceItem {
   _id: string;
   title: string;
   description: string;
@@ -34,29 +35,6 @@ interface ServiceItem {
   technicianName: string;
   serviceArea?: string;
 }
-
-const CATEGORIES = [
-  'All',
-  'Smartphone',
-  'Laptop & PC',
-  'AC',
-  'Refrigerator',
-  'TV',
-  'Washing Machine',
-  'Electrical',
-];
-
-const MODES = [
-  { label: 'All Modes', value: '' },
-  { label: 'Home Visit', value: 'Home Visit' },
-  { label: 'Shop Drop-off', value: 'Shop Drop-off' },
-];
-
-const SORT_OPTIONS = [
-  { label: 'Newest First', value: 'newest' },
-  { label: 'Price: Low to High', value: 'price_asc' },
-  { label: 'Price: High to Low', value: 'price_desc' },
-];
 
 function ServicesCatalog() {
   const router = useRouter();
@@ -165,97 +143,33 @@ function ServicesCatalog() {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="rounded-2xl border border-border bg-card p-5 shadow-xs space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
-          {/* Search Box */}
-          <div className="md:col-span-5 relative">
-            <Search className="absolute left-3.5 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="text"
-              placeholder="Search by issue, device model, or technician..."
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-                updateQueryAndUrl({ search: e.target.value, page: 1 });
-              }}
-              className="pl-10"
-            />
-          </div>
-
-          {/* Service Mode Dropdown */}
-          <div className="md:col-span-3">
-            <select
-              value={serviceMode}
-              onChange={(e) => {
-                setServiceMode(e.target.value);
-                setPage(1);
-                updateQueryAndUrl({ serviceMode: e.target.value, page: 1 });
-              }}
-              className="flex h-10 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              {MODES.map((m) => (
-                <option key={m.value} value={m.value}>
-                  {m.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Sort Dropdown */}
-          <div className="md:col-span-3">
-            <select
-              value={sort}
-              onChange={(e) => {
-                setSort(e.target.value);
-                setPage(1);
-                updateQueryAndUrl({ sort: e.target.value, page: 1 });
-              }}
-              className="flex h-10 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              {SORT_OPTIONS.map((s) => (
-                <option key={s.value} value={s.value}>
-                  {s.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Reset Filters */}
-          <div className="md:col-span-1 flex justify-end">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleResetFilters}
-              title="Reset Filters"
-              className="h-10 px-3 text-muted-foreground hover:text-foreground"
-            >
-              <RotateCcw className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-
-        {/* Category Pills */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-1 no-scrollbar">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => {
-                setCategory(cat);
-                setPage(1);
-                updateQueryAndUrl({ category: cat, page: 1 });
-              }}
-              className={`rounded-full px-3.5 py-1.5 text-xs font-semibold shrink-0 transition-all ${
-                category === cat
-                  ? 'bg-[#202522] text-white shadow-xs'
-                  : 'bg-muted/80 text-muted-foreground hover:bg-muted hover:text-foreground'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-      </div>
+      <ServiceFilterBar
+        search={search}
+        onSearchChange={(val) => {
+          setSearch(val);
+          setPage(1);
+          updateQueryAndUrl({ search: val, page: 1 });
+        }}
+        serviceMode={serviceMode}
+        onServiceModeChange={(val) => {
+          setServiceMode(val);
+          setPage(1);
+          updateQueryAndUrl({ serviceMode: val, page: 1 });
+        }}
+        sort={sort}
+        onSortChange={(val) => {
+          setSort(val);
+          setPage(1);
+          updateQueryAndUrl({ sort: val, page: 1 });
+        }}
+        category={category}
+        onCategoryChange={(val) => {
+          setCategory(val);
+          setPage(1);
+          updateQueryAndUrl({ category: val, page: 1 });
+        }}
+        onReset={handleResetFilters}
+      />
 
       {/* Services Grid */}
       {loading ? (

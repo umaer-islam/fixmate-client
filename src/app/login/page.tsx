@@ -114,13 +114,13 @@ function LoginForm() {
             {/* Quick Demo Credentials */}
             <div className="rounded-xl border border-border/60 bg-muted/40 p-3 text-xs space-y-1.5">
               <p className="font-semibold text-[11px] text-muted-foreground uppercase tracking-wider">
-                Demo Accounts (Click to test):
+                Demo Accounts (Click to fill):
               </p>
               <div className="flex flex-wrap gap-1.5">
                 <button
                   type="button"
                   onClick={() => {
-                    setEmail('customer1@fixmate.io');
+                    setEmail('customer@fixmate.io');
                     setPassword('Password123!');
                   }}
                   className="rounded-lg border border-border bg-card px-2 py-1 text-[11px] font-medium hover:bg-muted"
@@ -130,12 +130,22 @@ function LoginForm() {
                 <button
                   type="button"
                   onClick={() => {
-                    setEmail('tech1@fixmate.io');
+                    setEmail('marcus.tech@fixmate.io');
                     setPassword('Password123!');
                   }}
                   className="rounded-lg border border-border bg-card px-2 py-1 text-[11px] font-medium hover:bg-muted"
                 >
-                  Technician
+                  Tech (Marcus)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEmail('elena.tech@fixmate.io');
+                    setPassword('Password123!');
+                  }}
+                  className="rounded-lg border border-border bg-card px-2 py-1 text-[11px] font-medium hover:bg-muted"
+                >
+                  Tech (Elena)
                 </button>
                 <button
                   type="button"

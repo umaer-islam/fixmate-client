@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { QueryProvider } from "@/providers/query-provider";
 import { AuthProvider } from "@/providers/auth-provider";
+import { SmoothScrollProvider } from "@/components/providers/smooth-scroll-provider";
 import { Toaster } from "sonner";
 
 const geistSans = Geist({
@@ -33,7 +34,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <QueryProvider>
           <AuthProvider>
-            {children}
+            <SmoothScrollProvider>
+              {children}
+            </SmoothScrollProvider>
             <Toaster position="top-right" richColors />
           </AuthProvider>
         </QueryProvider>

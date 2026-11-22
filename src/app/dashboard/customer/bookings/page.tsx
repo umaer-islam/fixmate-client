@@ -7,6 +7,7 @@ import { DashboardShell } from '@/components/dashboard/dashboard-shell';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PaymentBadge } from '@/components/dashboard/payment-badge';
+import { CancelBookingModal } from '@/components/booking/cancel-modal';
 import { toast } from 'sonner';
 import {
   Calendar,
@@ -44,6 +45,7 @@ export default function CustomerBookingsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'all' | 'active' | 'completed' | 'cancelled'>('all');
   const [processingId, setProcessingId] = useState<string | null>(null);
+  const [cancellingBooking, setCancellingBooking] = useState<{ id: string; title: string } | null>(null);
 
   const fetchBookings = async () => {
     try {
@@ -61,18 +63,18 @@ export default function CustomerBookingsPage() {
     fetchBookings();
   }, []);
 
-  const handleCancelBooking = async (bookingId: string) => {
-    if (!confirm('Are you sure you want to cancel this repair request?')) return;
-
+  const handleConfirmCancel = async (_reason?: string) => {
+    if (!cancellingBooking) return;
     try {
-      setProcessingId(bookingId);
-      await api.patch(`/bookings/${bookingId}/cancel`);
+      setProcessingId(cancellingBooking.id);
+      await api.patch(`/bookings/${cancellingBooking.id}/cancel`);
       toast.success('Booking cancelled successfully.');
       await fetchBookings();
     } catch (err: any) {
       toast.error(err?.message || 'Failed to cancel booking.');
     } finally {
       setProcessingId(null);
+      setCancellingBooking(null);
     }
   };
 
@@ -254,11 +256,11 @@ export default function CustomerBookingsPage() {
                 {/* Cancel Button (if requested) */}
                 {b.status === 'requested' && (
                   <button
-                    onClick={() => handleCancelBooking(b._id)}
+                    onClick={() => setCancellingBooking({ id: b._id, title: b.serviceTitle })}
                     disabled={processingId === b._id}
                     className="px-3.5 py-2 border border-red-200 text-red-600 hover:bg-red-50 rounded-xl text-xs font-bold transition-colors disabled:opacity-50"
                   >
-                    {processingId === b._id ? 'Cancelling...' : 'Cancel Request'}
+                    Cancel Request
                   </button>
                 )}
 
@@ -274,6 +276,15 @@ export default function CustomerBookingsPage() {
           ))}
         </div>
       )}
+
+      {/* Cancel Booking Confirmation Modal */}
+      <CancelBookingModal
+        isOpen={Boolean(cancellingBooking)}
+        onClose={() => setCancellingBooking(null)}
+        bookingTitle={cancellingBooking?.title}
+        bookingId={cancellingBooking?.id}
+        onConfirm={handleConfirmCancel}
+      />
     </DashboardShell>
   );
 }

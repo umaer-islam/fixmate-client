@@ -7,6 +7,7 @@ import { useAuth } from '@/providers/auth-provider';
 import { DashboardShell } from '@/components/dashboard/dashboard-shell';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { StatCard } from '@/components/dashboard/stat-card';
 import {
   Calendar,
   Clock,
@@ -104,50 +105,30 @@ export default function CustomerDashboardPage() {
     >
       {/* Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-        <div className="bg-white rounded-2xl p-5 border border-graphite/10 shadow-xs flex items-center justify-between">
-          <div>
-            <span className="text-xs font-semibold text-graphite-light uppercase tracking-wider block">
-              Active Repairs
-            </span>
-            <span className="text-3xl font-extrabold text-graphite mt-1 block">
-              {isLoading ? <Skeleton className="h-8 w-12" /> : activeBookings.length}
-            </span>
-            <span className="text-xs text-graphite-light mt-1 block">In queue or underway</span>
-          </div>
-          <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600">
-            <Clock className="w-6 h-6" />
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl p-5 border border-graphite/10 shadow-xs flex items-center justify-between">
-          <div>
-            <span className="text-xs font-semibold text-graphite-light uppercase tracking-wider block">
-              Completed Jobs
-            </span>
-            <span className="text-3xl font-extrabold text-graphite mt-1 block">
-              {isLoading ? <Skeleton className="h-8 w-12" /> : completedBookings.length}
-            </span>
-            <span className="text-xs text-graphite-light mt-1 block">Successfully resolved</span>
-          </div>
-          <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600">
-            <CheckCircle2 className="w-6 h-6" />
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl p-5 border border-graphite/10 shadow-xs flex items-center justify-between">
-          <div>
-            <span className="text-xs font-semibold text-graphite-light uppercase tracking-wider block">
-              Total Spent
-            </span>
-            <span className="text-3xl font-extrabold text-graphite mt-1 block">
-              {isLoading ? <Skeleton className="h-8 w-16" /> : `$${totalSpent.toFixed(2)}`}
-            </span>
-            <span className="text-xs text-graphite-light mt-1 block">Paid via Stripe</span>
-          </div>
-          <div className="w-12 h-12 rounded-xl bg-repair-orange/10 flex items-center justify-center text-repair-orange">
-            <DollarSign className="w-6 h-6" />
-          </div>
-        </div>
+        <StatCard
+          title="Active Repairs"
+          value={activeBookings.length}
+          subtitle="In queue or underway"
+          icon={Clock}
+          iconVariant="amber"
+          isLoading={isLoading}
+        />
+        <StatCard
+          title="Completed Jobs"
+          value={completedBookings.length}
+          subtitle="Successfully resolved"
+          icon={CheckCircle2}
+          iconVariant="emerald"
+          isLoading={isLoading}
+        />
+        <StatCard
+          title="Total Spent"
+          value={`$${totalSpent.toFixed(2)}`}
+          subtitle="Paid via Stripe"
+          icon={DollarSign}
+          iconVariant="orange"
+          isLoading={isLoading}
+        />
       </div>
 
       {/* Recent Repairs Table / Card */}

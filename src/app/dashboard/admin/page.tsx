@@ -6,6 +6,7 @@ import { api } from '@/lib/api-client';
 import { DashboardShell } from '@/components/dashboard/dashboard-shell';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { StatCard } from '@/components/dashboard/stat-card';
 import {
   Users,
   Wrench,
@@ -75,77 +76,39 @@ export default function AdminOverviewPage() {
     >
       {/* Metrics 4-Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Total Users */}
-        <div className="bg-white rounded-2xl p-5 border border-graphite/10 shadow-xs flex items-center justify-between">
-          <div>
-            <span className="text-xs font-bold text-graphite-light uppercase tracking-wider block">
-              Platform Users
-            </span>
-            <span className="text-3xl font-extrabold text-graphite mt-1 block">
-              {isLoading ? <Skeleton className="h-8 w-12" /> : stats?.totalUsers || 0}
-            </span>
-            <span className="text-xs text-graphite-light mt-1 block">
-              {stats?.totalTechnicians || 0} Techs • {stats?.totalCustomers || 0} Customers
-            </span>
-          </div>
-          <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-600">
-            <Users className="w-6 h-6" />
-          </div>
-        </div>
-
-        {/* Services & Pending Moderation */}
-        <div className="bg-white rounded-2xl p-5 border border-graphite/10 shadow-xs flex items-center justify-between">
-          <div>
-            <span className="text-xs font-bold text-graphite-light uppercase tracking-wider block">
-              Total Services
-            </span>
-            <span className="text-3xl font-extrabold text-graphite mt-1 block">
-              {isLoading ? <Skeleton className="h-8 w-12" /> : stats?.totalServices || 0}
-            </span>
-            <span className="text-xs text-amber-600 font-semibold mt-1 block">
-              {stats?.pendingServices || 0} Awaiting Moderation
-            </span>
-          </div>
-          <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600">
-            <Wrench className="w-6 h-6" />
-          </div>
-        </div>
-
-        {/* Bookings */}
-        <div className="bg-white rounded-2xl p-5 border border-graphite/10 shadow-xs flex items-center justify-between">
-          <div>
-            <span className="text-xs font-bold text-graphite-light uppercase tracking-wider block">
-              Total Bookings
-            </span>
-            <span className="text-3xl font-extrabold text-graphite mt-1 block">
-              {isLoading ? <Skeleton className="h-8 w-12" /> : stats?.totalBookings || 0}
-            </span>
-            <span className="text-xs text-graphite-light mt-1 block">
-              {stats?.activeBookings || 0} Active / Underway
-            </span>
-          </div>
-          <div className="w-12 h-12 rounded-xl bg-repair-orange/10 flex items-center justify-center text-repair-orange">
-            <Calendar className="w-6 h-6" />
-          </div>
-        </div>
-
-        {/* Stripe Revenue */}
-        <div className="bg-white rounded-2xl p-5 border border-graphite/10 shadow-xs flex items-center justify-between">
-          <div>
-            <span className="text-xs font-bold text-graphite-light uppercase tracking-wider block">
-              Stripe Gross Volume
-            </span>
-            <span className="text-3xl font-extrabold text-emerald-700 mt-1 block">
-              {isLoading ? <Skeleton className="h-8 w-20" /> : `$${(stats?.totalRevenue || 0).toFixed(2)}`}
-            </span>
-            <span className="text-xs text-graphite-light mt-1 block">
-              {stats?.settledPaymentsCount || 0} Succeeded Invoices
-            </span>
-          </div>
-          <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600">
-            <DollarSign className="w-6 h-6" />
-          </div>
-        </div>
+        <StatCard
+          title="Platform Users"
+          value={stats?.totalUsers || 0}
+          subtitle={`${stats?.totalTechnicians || 0} Techs • ${stats?.totalCustomers || 0} Customers`}
+          icon={Users}
+          iconVariant="blue"
+          isLoading={isLoading}
+        />
+        <StatCard
+          title="Total Services"
+          value={stats?.totalServices || 0}
+          subtitle={`${stats?.pendingServices || 0} Awaiting Moderation`}
+          icon={Wrench}
+          iconVariant="amber"
+          isLoading={isLoading}
+        />
+        <StatCard
+          title="Total Bookings"
+          value={stats?.totalBookings || 0}
+          subtitle={`${stats?.activeBookings || 0} Active / Underway`}
+          icon={Calendar}
+          iconVariant="orange"
+          isLoading={isLoading}
+        />
+        <StatCard
+          title="Stripe Gross Volume"
+          value={`$${(stats?.totalRevenue || 0).toFixed(2)}`}
+          subtitle={`${stats?.settledPaymentsCount || 0} Succeeded Invoices`}
+          icon={DollarSign}
+          iconVariant="emerald"
+          valueClassName="text-emerald-700"
+          isLoading={isLoading}
+        />
       </div>
 
       {/* Navigation Quick Panels */}

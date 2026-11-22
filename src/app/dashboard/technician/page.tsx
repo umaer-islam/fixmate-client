@@ -7,6 +7,7 @@ import { useAuth } from '@/providers/auth-provider';
 import { DashboardShell } from '@/components/dashboard/dashboard-shell';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { StatCard } from '@/components/dashboard/stat-card';
 import {
   Calendar,
   Clock,
@@ -87,45 +88,41 @@ export default function TechnicianOverviewPage() {
     >
       {/* Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div className="bg-white rounded-2xl p-5 border border-graphite/10 shadow-xs">
-          <span className="text-xs font-bold text-graphite-light uppercase tracking-wider block">
-            Pending Requests
-          </span>
-          <span className="text-3xl font-extrabold text-amber-600 mt-1 block">
-            {isLoading ? <Skeleton className="h-8 w-10" /> : stats.pending}
-          </span>
-          <span className="text-xs text-graphite-light mt-1 block">Awaiting your response</span>
-        </div>
-
-        <div className="bg-white rounded-2xl p-5 border border-graphite/10 shadow-xs">
-          <span className="text-xs font-bold text-graphite-light uppercase tracking-wider block">
-            Jobs In Progress
-          </span>
-          <span className="text-3xl font-extrabold text-repair-orange mt-1 block">
-            {isLoading ? <Skeleton className="h-8 w-10" /> : stats.inProgress}
-          </span>
-          <span className="text-xs text-graphite-light mt-1 block">Underway / Accepted</span>
-        </div>
-
-        <div className="bg-white rounded-2xl p-5 border border-graphite/10 shadow-xs">
-          <span className="text-xs font-bold text-graphite-light uppercase tracking-wider block">
-            Completed Repairs
-          </span>
-          <span className="text-3xl font-extrabold text-emerald-600 mt-1 block">
-            {isLoading ? <Skeleton className="h-8 w-10" /> : stats.completed}
-          </span>
-          <span className="text-xs text-graphite-light mt-1 block">Successfully resolved</span>
-        </div>
-
-        <div className="bg-white rounded-2xl p-5 border border-graphite/10 shadow-xs">
-          <span className="text-xs font-bold text-graphite-light uppercase tracking-wider block">
-            Listed Services
-          </span>
-          <span className="text-3xl font-extrabold text-graphite mt-1 block">
-            {isLoading ? <Skeleton className="h-8 w-10" /> : stats.totalServices}
-          </span>
-          <span className="text-xs text-graphite-light mt-1 block">Active catalog offerings</span>
-        </div>
+        <StatCard
+          title="Pending Requests"
+          value={stats.pending}
+          subtitle="Awaiting your response"
+          icon={Clock}
+          iconVariant="amber"
+          valueClassName="text-amber-600"
+          isLoading={isLoading}
+        />
+        <StatCard
+          title="Jobs In Progress"
+          value={stats.inProgress}
+          subtitle="Underway / Accepted"
+          icon={Wrench}
+          iconVariant="orange"
+          valueClassName="text-[#F26A3D]"
+          isLoading={isLoading}
+        />
+        <StatCard
+          title="Completed Repairs"
+          value={stats.completed}
+          subtitle="Successfully resolved"
+          icon={CheckCircle2}
+          iconVariant="emerald"
+          valueClassName="text-emerald-600"
+          isLoading={isLoading}
+        />
+        <StatCard
+          title="Listed Services"
+          value={stats.totalServices}
+          subtitle="Active catalog offerings"
+          icon={Layers}
+          iconVariant="graphite"
+          isLoading={isLoading}
+        />
       </div>
 
       {/* Quick Action Banner */}

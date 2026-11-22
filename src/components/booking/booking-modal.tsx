@@ -45,7 +45,7 @@ export function BookingModal({ service, isOpen, onClose, onSuccess }: BookingMod
     setError(null);
 
     if (!isAuthenticated) {
-      toast.error('Please log in as a customer to book this service.');
+      toast.error('Please log in to book this service.');
       router.push(`/login?redirect=/services/${service._id}`);
       return;
     }

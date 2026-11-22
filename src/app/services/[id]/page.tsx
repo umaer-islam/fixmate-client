@@ -355,11 +355,17 @@ export default function ServiceDetailPage() {
                   variant="primary"
                   size="lg"
                   onClick={handleBookClick}
-                  disabled={!service.isAvailable}
+                  disabled={!service.isAvailable || (!!user?.id && user.id === service.technicianId)}
                   className="w-full text-sm font-bold shadow-md"
                 >
                   <Calendar className="w-4 h-4" />
-                  <span>{service.isAvailable ? 'Book This Repair' : 'Service Unavailable'}</span>
+                  <span>
+                    {user?.id && user.id === service.technicianId
+                      ? 'Your Own Service'
+                      : service.isAvailable
+                      ? 'Book This Repair'
+                      : 'Service Unavailable'}
+                  </span>
                 </MotionButton>
 
                 {/* Customer Guarantee Perks */}

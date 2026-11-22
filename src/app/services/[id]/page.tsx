@@ -3,11 +3,16 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { motion } from 'motion/react';
 import { api } from '@/lib/api-client';
 import { useAuth } from '@/providers/auth-provider';
 import { BookingModal } from '@/components/booking/booking-modal';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Navbar } from '@/components/layout/navbar';
+import { Footer } from '@/components/layout/footer';
+import { FadeIn } from '@/components/motion/fade-in';
+import { MotionButton } from '@/components/motion/motion-button';
 import {
   Wrench,
   Clock,
@@ -20,6 +25,8 @@ import {
   Star,
   Sparkles,
   Info,
+  Lock,
+  ChevronRight,
 } from 'lucide-react';
 
 interface ServiceDetail {
@@ -90,263 +97,291 @@ export default function ServiceDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-ivory py-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Skeleton className="h-6 w-48 mb-6" />
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-6">
-              <Skeleton className="h-96 w-full rounded-2xl" />
-              <Skeleton className="h-10 w-3/4" />
-              <Skeleton className="h-24 w-full" />
-            </div>
-            <div>
-              <Skeleton className="h-80 w-full rounded-2xl" />
+      <div className="min-h-screen flex flex-col bg-[#F5F3EE]">
+        <Navbar />
+        <main className="flex-1 py-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <Skeleton className="h-6 w-48 mb-6 rounded-lg" />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2 space-y-6">
+                <Skeleton className="h-96 w-full rounded-3xl" />
+                <Skeleton className="h-10 w-3/4 rounded-xl" />
+                <Skeleton className="h-24 w-full rounded-2xl" />
+              </div>
+              <div>
+                <Skeleton className="h-80 w-full rounded-3xl" />
+              </div>
             </div>
           </div>
-        </div>
+        </main>
+        <Footer />
       </div>
     );
   }
 
   if (error || !service) {
     return (
-      <div className="min-h-[70vh] bg-ivory flex items-center justify-center px-4">
-        <div className="max-w-md w-full text-center bg-white p-8 rounded-2xl shadow-sm border border-graphite/10">
-          <AlertCircle className="w-12 h-12 text-repair-orange mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-graphite mb-2">Service Not Available</h2>
-          <p className="text-graphite-light text-sm mb-6">
-            {error || 'The requested repair service could not be found or is no longer listed.'}
-          </p>
-          <Link
-            href="/services"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-graphite text-white rounded-lg text-sm font-semibold hover:bg-graphite/90 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Browse All Services</span>
-          </Link>
-        </div>
+      <div className="min-h-screen flex flex-col bg-[#F5F3EE]">
+        <Navbar />
+        <main className="flex-1 flex items-center justify-center px-4 py-16">
+          <div className="max-w-md w-full text-center bg-card p-8 rounded-3xl shadow-sm border border-border space-y-4">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500/10 text-[#F26A3D] mx-auto">
+              <AlertCircle className="w-8 h-8" />
+            </div>
+            <h2 className="text-xl font-bold text-foreground">Service Not Available</h2>
+            <p className="text-muted-foreground text-xs leading-relaxed">
+              {error || 'The requested repair service could not be found or is no longer listed.'}
+            </p>
+            <Link href="/services">
+              <MotionButton variant="graphite" size="sm" className="mt-2">
+                <ArrowLeft className="w-4 h-4" />
+                <span>Browse All Services</span>
+              </MotionButton>
+            </Link>
+          </div>
+        </main>
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-ivory py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Breadcrumb Navigation */}
-        <nav className="flex items-center gap-2 text-sm text-graphite-light mb-6">
-          <Link href="/" className="hover:text-graphite transition-colors">
-            Home
-          </Link>
-          <span>/</span>
-          <Link href="/services" className="hover:text-graphite transition-colors">
-            Services
-          </Link>
-          <span>/</span>
-          <span className="text-graphite font-medium truncate max-w-xs">{service.title}</span>
-        </nav>
+    <div className="min-h-screen flex flex-col bg-[#F5F3EE]">
+      <Navbar />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content Column */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Hero Image Card */}
-            <div className="relative rounded-2xl overflow-hidden bg-white border border-graphite/10 shadow-sm aspect-video md:aspect-[16/9]">
-              <img
-                src={service.image}
-                alt={service.title}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src =
-                    'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80';
-                }}
-              />
-              <div className="absolute top-4 left-4 flex flex-wrap gap-2">
-                <Badge variant="primary" className="text-xs uppercase tracking-wider font-semibold">
-                  {service.category}
-                </Badge>
-                <Badge
-                  variant={service.serviceMode.toLowerCase().includes('visit') || service.serviceMode === 'onsite' ? 'info' : 'warning'}
-                  className="capitalize font-semibold text-xs"
-                >
-                  {service.serviceMode}
-                </Badge>
-              </div>
+      <main className="flex-1 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Breadcrumb Navigation */}
+          <FadeIn direction="down">
+            <nav className="flex items-center gap-2 text-xs text-muted-foreground mb-6 font-medium">
+              <Link href="/" className="hover:text-foreground transition-colors">
+                Home
+              </Link>
+              <ChevronRight className="h-3 w-3" />
+              <Link href="/services" className="hover:text-foreground transition-colors">
+                Services
+              </Link>
+              <ChevronRight className="h-3 w-3" />
+              <span className="text-foreground font-bold truncate max-w-xs">{service.title}</span>
+            </nav>
+          </FadeIn>
 
-              {!service.isAvailable && (
-                <div className="absolute inset-0 bg-graphite/60 backdrop-blur-xs flex items-center justify-center">
-                  <span className="px-4 py-2 rounded-lg bg-red-600 text-white font-bold tracking-wide uppercase text-sm">
-                    Currently Unavailable
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {/* Title & Metadata */}
-            <div className="bg-white rounded-2xl p-6 sm:p-8 border border-graphite/10 shadow-sm space-y-6">
-              <div>
-                <div className="flex items-center gap-2 text-xs font-semibold text-repair-orange uppercase tracking-wider mb-2">
-                  <Sparkles className="w-4 h-4" />
-                  <span>FixMate Certified Service</span>
-                </div>
-                <h1 className="text-2xl sm:text-3xl font-extrabold text-graphite tracking-tight">
-                  {service.title}
-                </h1>
-              </div>
-
-              {/* Quick Specs Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 rounded-xl bg-ivory border border-graphite/10">
-                <div>
-                  <span className="text-xs font-medium text-graphite-light block mb-1">Standard Duration</span>
-                  <div className="flex items-center gap-1.5 text-sm font-bold text-graphite">
-                    <Clock className="w-4 h-4 text-repair-orange" />
-                    <span>{service.estimatedDuration}</span>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Main Content Column */}
+            <div className="lg:col-span-2 space-y-8">
+              {/* Hero Image Card */}
+              <FadeIn direction="up">
+                <div className="relative rounded-3xl overflow-hidden bg-card border border-border shadow-xs aspect-video md:aspect-[16/9]">
+                  <img
+                    src={service.image}
+                    alt={service.title}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src =
+                        'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80';
+                    }}
+                  />
+                  <div className="absolute top-4 left-4 flex flex-wrap gap-2 z-10">
+                    <Badge variant="default" className="text-xs uppercase tracking-wider font-bold bg-[#202522]/90 backdrop-blur-xs text-white">
+                      {service.category}
+                    </Badge>
+                    <Badge variant="sage" className="capitalize font-bold text-xs shadow-xs">
+                      {service.serviceMode}
+                    </Badge>
                   </div>
-                </div>
 
-                <div>
-                  <span className="text-xs font-medium text-graphite-light block mb-1">Service Coverage</span>
-                  <div className="flex items-center gap-1.5 text-sm font-bold text-graphite">
-                    <MapPin className="w-4 h-4 text-repair-orange" />
-                    <span>{service.serviceArea || 'Metro & Suburbs'}</span>
-                  </div>
-                </div>
-
-                <div>
-                  <span className="text-xs font-medium text-graphite-light block mb-1">Turnaround Time</span>
-                  <div className="flex items-center gap-1.5 text-sm font-bold text-graphite">
-                    <Calendar className="w-4 h-4 text-repair-orange" />
-                    <span>{service.turnaroundTime || 'Same Day / 24h'}</span>
-                  </div>
-                </div>
-
-                <div>
-                  <span className="text-xs font-medium text-graphite-light block mb-1">Warranty Guarantee</span>
-                  <div className="flex items-center gap-1.5 text-sm font-bold text-graphite">
-                    <ShieldCheck className="w-4 h-4 text-repair-orange" />
-                    <span>90-Day Guarantee</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Service Description */}
-              <div className="space-y-4">
-                <h2 className="text-lg font-bold text-graphite">Service Overview</h2>
-                <div className="text-graphite-light text-sm sm:text-base leading-relaxed whitespace-pre-line">
-                  {service.description}
-                </div>
-              </div>
-
-              {/* Service Standards Breakdown */}
-              <div className="space-y-4 pt-4 border-t border-graphite/10">
-                <h2 className="text-lg font-bold text-graphite">What&apos;s Included With Every Repair</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {[
-                    'Full diagnostic hardware & component analysis',
-                    'Genuine OEM or top-grade replacement parts',
-                    'Pre-delivery functional calibration test',
-                    '90-day comprehensive repair warranty',
-                    'Transparent quote with zero hidden surcharges',
-                    'Secure post-service digital payment via Stripe',
-                  ].map((item, idx) => (
-                    <div key={idx} className="flex items-start gap-2.5 text-sm text-graphite">
-                      <CheckCircle className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
-                      <span>{item}</span>
+                  {!service.isAvailable && (
+                    <div className="absolute inset-0 bg-[#202522]/70 backdrop-blur-xs flex items-center justify-center">
+                      <span className="px-5 py-2.5 rounded-xl bg-red-600 text-white font-bold tracking-wide uppercase text-xs shadow-md">
+                        Currently Unavailable
+                      </span>
                     </div>
-                  ))}
+                  )}
                 </div>
-              </div>
+              </FadeIn>
+
+              {/* Title & Metadata */}
+              <FadeIn direction="up" delay={0.1}>
+                <div className="bg-card rounded-3xl p-6 sm:p-8 border border-border shadow-xs space-y-6">
+                  <div>
+                    <div className="flex items-center gap-2 text-xs font-bold text-[#F26A3D] uppercase tracking-wider mb-2">
+                      <Sparkles className="w-4 h-4" />
+                      <span>FixMate Certified Service Specification</span>
+                    </div>
+                    <h1 className="text-2xl sm:text-3xl font-black text-[#202522] tracking-tight font-heading">
+                      {service.title}
+                    </h1>
+                  </div>
+
+                  {/* Quick Specs Grid */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 rounded-2xl bg-muted/40 border border-border/70">
+                    <div>
+                      <span className="text-[11px] font-bold uppercase text-muted-foreground block mb-1">
+                        Est. Duration
+                      </span>
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
+                        <Clock className="w-4 h-4 text-[#F26A3D]" />
+                        <span>{service.estimatedDuration}</span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <span className="text-[11px] font-bold uppercase text-muted-foreground block mb-1">
+                        Service Area
+                      </span>
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
+                        <MapPin className="w-4 h-4 text-[#F26A3D]" />
+                        <span className="truncate">{service.serviceArea || 'Metro & Suburbs'}</span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <span className="text-[11px] font-bold uppercase text-muted-foreground block mb-1">
+                        Turnaround
+                      </span>
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
+                        <Calendar className="w-4 h-4 text-[#F26A3D]" />
+                        <span>{service.turnaroundTime || '24h Standard'}</span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <span className="text-[11px] font-bold uppercase text-muted-foreground block mb-1">
+                        Warranty
+                      </span>
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
+                        <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                        <span>90-Day Coverage</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Service Description */}
+                  <div className="space-y-3">
+                    <h2 className="text-base font-bold text-[#202522]">Service Overview</h2>
+                    <div className="text-muted-foreground text-xs sm:text-sm leading-relaxed whitespace-pre-line">
+                      {service.description}
+                    </div>
+                  </div>
+
+                  {/* Service Standards Breakdown */}
+                  <div className="space-y-3 pt-4 border-t border-border">
+                    <h2 className="text-base font-bold text-[#202522]">What&apos;s Included With Every Repair</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {[
+                        'Comprehensive diagnostic hardware & circuit analysis',
+                        'Genuine OEM or certified replacement components',
+                        'Post-repair stress testing & calibration inspection',
+                        '90-day parts & workmanship warranty coverage',
+                        'Authoritative quote with zero upfront charge',
+                        'Direct post-repair Stripe digital receipt',
+                      ].map((item, idx) => (
+                        <div key={idx} className="flex items-start gap-2.5 text-xs text-foreground font-medium">
+                          <CheckCircle className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
+                          <span>{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </FadeIn>
+
+              {/* Technician Credentials Info Card */}
+              <FadeIn direction="up" delay={0.2}>
+                <div className="bg-card rounded-3xl p-6 border border-border shadow-xs flex items-center justify-between flex-wrap gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-[#202522] text-[#F26A3D] flex items-center justify-center font-bold text-lg shadow-xs">
+                      {service.technicianName ? service.technicianName.charAt(0).toUpperCase() : 'T'}
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-foreground text-base">
+                        {service.technicianName || 'Certified FixMate Specialist'}
+                      </h3>
+                      <p className="text-xs text-muted-foreground flex items-center gap-1.5 mt-0.5">
+                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                        Verified background & certified technician
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs text-foreground bg-muted/60 px-3.5 py-1.5 rounded-xl border border-border/80">
+                    <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                    <span className="font-bold">4.9 / 5.0</span>
+                    <span className="text-muted-foreground font-normal">(Verified Rating)</span>
+                  </div>
+                </div>
+              </FadeIn>
             </div>
 
-            {/* Technician Credentials Info Card */}
-            <div className="bg-white rounded-2xl p-6 border border-graphite/10 shadow-sm flex items-center justify-between flex-wrap gap-4">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-repair-orange/10 border border-repair-orange/20 flex items-center justify-center text-repair-orange font-bold text-lg">
-                  {service.technicianName ? service.technicianName.charAt(0).toUpperCase() : 'T'}
-                </div>
+            {/* Right Column / Sticky Booking Card */}
+            <div className="lg:col-span-1">
+              <div className="sticky top-24 bg-card rounded-3xl p-6 border border-border shadow-md space-y-6">
                 <div>
-                  <h3 className="font-bold text-graphite text-base">
-                    {service.technicianName || 'Certified FixMate Pro Technician'}
-                  </h3>
-                  <p className="text-xs text-graphite-light flex items-center gap-1 mt-0.5">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                    Background verified & skill certified
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-1.5 text-xs text-graphite-light bg-ivory px-3 py-1.5 rounded-lg border border-graphite/10">
-                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                <span className="font-bold text-graphite">4.9 / 5.0</span>
-                <span>(verified customer rating)</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column / Sticky Booking Card */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-24 bg-white rounded-2xl p-6 border border-graphite/10 shadow-md space-y-6">
-              <div>
-                <span className="text-xs font-semibold text-graphite-light uppercase tracking-wider block mb-1">
-                  Base Service Price
-                </span>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-extrabold text-graphite">
-                    ${service.basePrice.toFixed(2)}
+                  <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">
+                    Base Service Price
                   </span>
-                  <span className="text-xs text-graphite-light font-medium">starting price</span>
-                </div>
-                <p className="text-xs text-graphite-light mt-1">
-                  Final price confirmed after on-site diagnostic if hardware replacement is required.
-                </p>
-              </div>
-
-              {/* Status Indicator */}
-              <div className="p-3 rounded-xl bg-ivory border border-graphite/10 flex items-center gap-3">
-                <span
-                  className={`w-3 h-3 rounded-full flex-shrink-0 ${
-                    service.isAvailable ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'
-                  }`}
-                />
-                <div className="text-xs">
-                  <p className="font-bold text-graphite">
-                    {service.isAvailable ? 'Technician Available Now' : 'Currently Unavailable'}
-                  </p>
-                  <p className="text-graphite-light">
-                    {service.isAvailable
-                      ? 'Accepting bookings for upcoming dates'
-                      : 'Check back soon or explore other pros'}
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-4xl font-black text-[#202522] font-mono">
+                      ${service.basePrice.toFixed(2)}
+                    </span>
+                    <span className="text-xs text-muted-foreground font-semibold">starting price</span>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground mt-1.5 leading-relaxed">
+                    Authoritative base fee. Final price established upon on-site diagnosis before any replacement components are installed.
                   </p>
                 </div>
-              </div>
 
-              {/* CTA Button */}
-              <button
-                type="button"
-                onClick={handleBookClick}
-                disabled={!service.isAvailable}
-                className="w-full py-3.5 px-6 bg-repair-orange hover:bg-repair-orange-dark text-white rounded-xl text-base font-bold shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <Calendar className="w-5 h-5" />
-                <span>{service.isAvailable ? 'Book This Repair' : 'Service Unavailable'}</span>
-              </button>
+                {/* Status Indicator */}
+                <div className="p-3.5 rounded-2xl bg-muted/50 border border-border flex items-center gap-3">
+                  <span
+                    className={`w-3 h-3 rounded-full shrink-0 ${
+                      service.isAvailable ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'
+                    }`}
+                  />
+                  <div className="text-xs">
+                    <p className="font-bold text-foreground">
+                      {service.isAvailable ? 'Technician Available Now' : 'Currently Unavailable'}
+                    </p>
+                    <p className="text-[11px] text-muted-foreground">
+                      {service.isAvailable
+                        ? 'Accepting bookings for upcoming dates'
+                        : 'Check back soon or explore other pros'}
+                    </p>
+                  </div>
+                </div>
 
-              {/* Customer Guarantee Perks */}
-              <div className="space-y-3 pt-4 border-t border-graphite/10 text-xs text-graphite-light">
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>FixMate 90-day parts & labor guarantee</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>Pay securely with Stripe only after repair completion</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Info className="w-4 h-4 text-repair-orange flex-shrink-0" />
-                  <span>Free cancellation while booking is in requested state</span>
+                {/* CTA Button */}
+                <MotionButton
+                  type="button"
+                  variant="primary"
+                  size="lg"
+                  onClick={handleBookClick}
+                  disabled={!service.isAvailable}
+                  className="w-full text-sm font-bold shadow-md"
+                >
+                  <Calendar className="w-4 h-4" />
+                  <span>{service.isAvailable ? 'Book This Repair' : 'Service Unavailable'}</span>
+                </MotionButton>
+
+                {/* Customer Guarantee Perks */}
+                <div className="space-y-3 pt-4 border-t border-border text-xs text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>FixMate 90-day parts & labor guarantee</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>Pay securely with Stripe only after completion</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Info className="w-4 h-4 text-[#F26A3D] shrink-0" />
+                    <span>Zero upfront fee • Free cancellation while requested</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </main>
 
       {/* Booking Dialog Modal */}
       <BookingModal
@@ -365,6 +400,8 @@ export default function ServiceDetailPage() {
           router.push(`/dashboard/customer/bookings/${bookingId}`);
         }}
       />
+
+      <Footer />
     </div>
   );
 }

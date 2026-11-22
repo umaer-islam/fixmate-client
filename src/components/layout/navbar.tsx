@@ -127,7 +127,7 @@ export function Navbar() {
 
                   {role === 'technician' && (
                     <Link
-                      href="/dashboard/technician/services"
+                      href="/dashboard/technician/my-services"
                       className="flex items-center gap-2 rounded-xl px-2.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors"
                     >
                       <Briefcase className="h-4 w-4 text-muted-foreground" />
@@ -146,7 +146,7 @@ export function Navbar() {
                   )}
 
                   <Link
-                    href="/dashboard/customer/profile"
+                    href="/dashboard/profile"
                     className="flex items-center gap-2 rounded-xl px-2.5 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors"
                   >
                     <Settings className="h-4 w-4 text-muted-foreground" />
@@ -167,12 +167,12 @@ export function Navbar() {
             </div>
           ) : (
             <div className="flex items-center gap-3">
-              <Link href="/login">
+              <Link href="/sign-in">
                 <Button variant="ghost" size="sm" className="font-semibold text-xs">
                   Sign In
                 </Button>
               </Link>
-              <Link href="/register">
+              <Link href="/sign-up">
                 <Button size="sm" className="bg-[#F26A3D] hover:bg-[#F26A3D]/90 text-white font-semibold text-xs rounded-xl shadow-xs">
                   Get Started
                 </Button>
@@ -239,12 +239,12 @@ export function Navbar() {
               </div>
             ) : (
               <div className="flex flex-col gap-2">
-                <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                <Link href="/sign-in" onClick={() => setMobileMenuOpen(false)}>
                   <Button variant="outline" className="w-full justify-center text-xs">
                     Sign In
                   </Button>
                 </Link>
-                <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
+                <Link href="/sign-up" onClick={() => setMobileMenuOpen(false)}>
                   <Button className="w-full justify-center bg-[#F26A3D] text-white text-xs">
                     Get Started
                   </Button>

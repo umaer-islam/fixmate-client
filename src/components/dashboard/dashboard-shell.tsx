@@ -43,14 +43,14 @@ export function DashboardShell({
     { label: 'Overview', href: '/dashboard/customer', icon: LayoutDashboard },
     { label: 'My Bookings', href: '/dashboard/customer/bookings', icon: Calendar },
     { label: 'Payment History', href: '/dashboard/customer/payments', icon: CreditCard },
-    { label: 'Profile Settings', href: '/dashboard/customer/profile', icon: User },
+    { label: 'Profile Settings', href: '/dashboard/profile', icon: User },
   ];
 
   const technicianNav = [
-    { label: 'Job Queue', href: '/dashboard/technician/bookings', icon: Calendar },
-    { label: 'My Services', href: '/dashboard/technician/services', icon: Wrench },
-    { label: 'Add New Service', href: '/dashboard/technician/services/new', icon: PlusCircle },
-    { label: 'Profile & Details', href: '/dashboard/customer/profile', icon: User },
+    { label: 'Job Queue', href: '/dashboard/technician/requests', icon: Calendar },
+    { label: 'My Services', href: '/dashboard/technician/my-services', icon: Wrench },
+    { label: 'Add New Service', href: '/dashboard/technician/add-service', icon: PlusCircle },
+    { label: 'Profile & Details', href: '/dashboard/profile', icon: User },
   ];
 
   const adminNav = [
@@ -58,7 +58,8 @@ export function DashboardShell({
     { label: 'Moderate Services', href: '/dashboard/admin/services', icon: Layers },
     { label: 'User Directory', href: '/dashboard/admin/users', icon: Users },
     { label: 'All Bookings', href: '/dashboard/admin/bookings', icon: Calendar },
-    { label: 'Financial Logs', href: '/dashboard/admin/payments', icon: DollarSign },
+    { label: 'Transactions', href: '/dashboard/admin/transactions', icon: DollarSign },
+    { label: 'Admin Profile', href: '/dashboard/profile', icon: User },
   ];
 
   const navItems = role === 'admin' ? adminNav : role === 'technician' ? technicianNav : customerNav;

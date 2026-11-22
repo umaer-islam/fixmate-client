@@ -5,6 +5,7 @@ import { motion, useReducedMotion, type Variants } from 'motion/react';
 import Balancer from 'react-wrap-balancer';
 import { cn } from '@/lib/utils';
 import { Cta, type CtaProps } from '@/components/ui/hero-10-utils/cta';
+import { DotField } from '@/components/ui/dot-field/dot-field';
 
 export interface Hero10Props {
   badge?: React.ReactNode;
@@ -250,6 +251,22 @@ export function Hero10({
 
   return (
     <section className="bg-gradient-to-b from-[#F5F3EE] via-[#F5F3EE] to-background relative isolate w-full overflow-hidden border-b border-border/60">
+      {/* React Bits Interactive WebGL2 DotField Background */}
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-45">
+        <DotField
+          gradientFrom="#F26A3D"
+          gradientTo="#202522"
+          dotRadius={1.4}
+          dotSpacing={16}
+          cursorRadius={240}
+          bulgeStrength={0.55}
+          glowRadius={160}
+          glowIntensity={0.9}
+          lightMode
+          opacity={0.7}
+        />
+      </div>
+
       <motion.div
         className={cn(
           'relative z-10 mx-auto flex max-w-6xl flex-col items-center px-4 sm:px-6 lg:px-8 text-center',

@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { motion } from 'motion/react';
 import { api } from '@/lib/api-client';
 import { DashboardShell } from '@/components/dashboard/dashboard-shell';
 import { Badge } from '@/components/ui/badge';
@@ -14,7 +13,6 @@ import { toast } from 'sonner';
 import {
   Calendar,
   Clock,
-  CheckCircle2,
   AlertCircle,
   CreditCard,
   XCircle,
@@ -22,9 +20,7 @@ import {
   MapPin,
   Phone,
   ArrowLeft,
-  Loader2,
   ShieldCheck,
-  FileText,
   DollarSign,
   User,
 } from 'lucide-react';
@@ -35,25 +31,26 @@ interface BookingDetail {
   serviceTitle: string;
   serviceCategory: string;
   serviceImage?: string;
-  technicianId: string;
+  technicianId?: string;
   technicianName?: string;
   customerId: string;
-  customerPhone: string;
-  address: string;
-  problemDescription: string;
+  customerName?: string;
+  customerPhone?: string;
+  address?: string;
+  problemDescription?: string;
   status: 'requested' | 'accepted' | 'rejected' | 'in-progress' | 'completed' | 'cancelled';
   paymentStatus: 'unpaid' | 'paid';
   basePrice: number;
-  finalAmount?: number;
-  preferredDate: string;
-  createdAt: string;
+  finalAmount?: number | null;
+  preferredDate?: string;
+  createdAt?: string;
   updatedAt?: string;
 }
 
 export default function CustomerBookingDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const bookingId = params?.id as string;
+  const bookingId = (params?.id as string) || '';
 
   const [booking, setBooking] = useState<BookingDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -61,12 +58,15 @@ export default function CustomerBookingDetailPage() {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const fetchBooking = async () => {
+    if (!bookingId) return;
     try {
       setIsLoading(true);
       setError(null);
       const res = await api.get<BookingDetail>(`/bookings/${bookingId}`);
       if (res.data) {
         setBooking(res.data);
+      } else {
+        setError('Booking details could not be found.');
       }
     } catch (err: any) {
       setError(err?.message || 'Failed to load booking details.');
@@ -87,7 +87,7 @@ export default function CustomerBookingDetailPage() {
     try {
       setIsProcessing(true);
       await api.patch(`/bookings/${bookingId}/cancel`);
-      toast.success('Booking cancelled.');
+      toast.success('Booking cancelled successfully.');
       await fetchBooking();
     } catch (err: any) {
       toast.error(err?.message || 'Failed to cancel booking.');
@@ -107,9 +107,11 @@ export default function CustomerBookingDetailPage() {
       if (res.data?.sessionUrl) {
         toast.info('Redirecting to Stripe Checkout...');
         window.location.href = res.data.sessionUrl;
+      } else {
+        toast.error('Unable to initialize payment session.');
       }
     } catch (err: any) {
-      toast.error(err?.message || 'Failed to start payment checkout.');
+      toast.error(err?.message || 'Payment initiation failed.');
     } finally {
       setIsProcessing(false);
     }
@@ -117,9 +119,9 @@ export default function CustomerBookingDetailPage() {
 
   if (isLoading) {
     return (
-      <DashboardShell allowedRoles={['customer']} title="Booking Details">
+      <DashboardShell allowedRoles={['customer', 'admin']} title="Booking Details">
         <div className="space-y-6">
-          <Skeleton className="h-32 w-full rounded-3xl" />
+          <Skeleton className="h-28 w-full rounded-3xl" />
           <Skeleton className="h-72 w-full rounded-3xl" />
         </div>
       </DashboardShell>
@@ -128,7 +130,7 @@ export default function CustomerBookingDetailPage() {
 
   if (error || !booking) {
     return (
-      <DashboardShell allowedRoles={['customer']} title="Booking Not Found">
+      <DashboardShell allowedRoles={['customer', 'admin']} title="Booking Details">
         <div className="bg-card rounded-3xl border border-border/80 p-8 text-center space-y-4">
           <AlertCircle className="w-12 h-12 text-[#F26A3D] mx-auto" />
           <h2 className="text-lg font-bold text-foreground">Unable to load booking</h2>
@@ -144,11 +146,24 @@ export default function CustomerBookingDetailPage() {
     );
   }
 
+  const formattedDate = booking.preferredDate
+    ? new Date(booking.preferredDate).toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      })
+    : 'Date to be scheduled';
+
+  const basePriceNum = Number(booking.basePrice) || 0;
+  const hasFinalAmount = booking.finalAmount != null && !isNaN(Number(booking.finalAmount));
+  const finalAmountNum = hasFinalAmount ? Number(booking.finalAmount) : null;
+  const bookingCode = String(booking._id || '').slice(-6).toUpperCase();
+
   return (
     <DashboardShell
-      allowedRoles={['customer']}
-      title={`Booking #${booking._id.slice(-6).toUpperCase()}`}
-      description={`Tracking repairs for ${booking.serviceTitle}`}
+      allowedRoles={['customer', 'admin']}
+      title={`Booking #${bookingCode}`}
+      description={`Tracking repairs for ${booking.serviceTitle || 'Repair Service'}`}
       action={
         <Link
           href="/dashboard/customer/bookings"
@@ -165,8 +180,8 @@ export default function CustomerBookingDetailPage() {
           Repair Lifecycle Status
         </h2>
         <BookingTimeline
-          status={booking.status}
-          paymentStatus={booking.paymentStatus}
+          status={booking.status || 'requested'}
+          paymentStatus={booking.paymentStatus || 'unpaid'}
         />
       </div>
 
@@ -192,14 +207,25 @@ export default function CustomerBookingDetailPage() {
                   </div>
                 )}
               </div>
-              <div className="space-y-1">
-                <Badge variant="primary" className="text-[10px] uppercase font-bold tracking-wider">
-                  {booking.serviceCategory}
-                </Badge>
-                <h4 className="font-extrabold text-[#202522] text-base tracking-tight">{booking.serviceTitle}</h4>
-                <p className="text-xs text-muted-foreground">
-                  Scheduled Date: <strong className="text-foreground">{new Date(booking.preferredDate).toLocaleDateString()}</strong>
+              <div className="space-y-1.5 flex-1 min-w-0">
+                <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-[#F26A3D]">
+                  {booking.serviceCategory || 'General Service'}
+                </span>
+                <h4 className="font-extrabold text-[#202522] text-base tracking-tight truncate">
+                  {booking.serviceTitle || 'Repair Service'}
+                </h4>
+                <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5 text-muted-foreground/70" />
+                  <span>Scheduled: <strong className="text-foreground">{formattedDate}</strong></span>
                 </p>
+                {booking.technicianName && (
+                  <div className="pt-1">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200/60 rounded-xl px-2.5 py-1">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>Technician: {booking.technicianName}</span>
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -208,8 +234,8 @@ export default function CustomerBookingDetailPage() {
               <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">
                 Reported Problem
               </h4>
-              <p className="text-sm text-muted-foreground bg-[#F5F3EE]/60 p-4 rounded-2xl border border-border/60 whitespace-pre-line leading-relaxed">
-                {booking.problemDescription}
+              <p className="text-xs sm:text-sm text-muted-foreground bg-[#F5F3EE]/60 p-4 rounded-2xl border border-border/60 whitespace-pre-line leading-relaxed">
+                {booking.problemDescription || 'No description provided.'}
               </p>
             </div>
 
@@ -217,21 +243,25 @@ export default function CustomerBookingDetailPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
               <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-[#F5F3EE]/60 border border-border/60">
                 <Phone className="w-4 h-4 text-[#F26A3D] shrink-0" />
-                <div>
+                <div className="overflow-hidden">
                   <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">
                     Contact Phone
                   </span>
-                  <span className="text-xs font-bold text-foreground">{booking.customerPhone}</span>
+                  <span className="text-xs font-bold text-foreground">
+                    {booking.customerPhone || 'Not provided'}
+                  </span>
                 </div>
               </div>
 
               <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-[#F5F3EE]/60 border border-border/60">
                 <MapPin className="w-4 h-4 text-[#F26A3D] shrink-0" />
-                <div>
+                <div className="overflow-hidden">
                   <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">
                     Service Location
                   </span>
-                  <span className="text-xs font-bold text-foreground truncate max-w-xs">{booking.address}</span>
+                  <span className="text-xs font-bold text-foreground truncate block">
+                    {booking.address || 'Not provided'}
+                  </span>
                 </div>
               </div>
             </div>
@@ -246,24 +276,26 @@ export default function CustomerBookingDetailPage() {
               <span>Billing & Settlement</span>
             </h3>
 
-            <div className="p-4 bg-[#F5F3EE]/80 rounded-2xl border border-border/70 space-y-2 text-xs">
+            <div className="p-4 bg-[#F5F3EE]/80 rounded-2xl border border-border/70 space-y-2.5 text-xs">
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground">Base Quote:</span>
-                <span className="font-bold text-foreground">${booking.basePrice.toFixed(2)}</span>
+                <span className="font-bold text-foreground">${basePriceNum.toFixed(2)}</span>
               </div>
-              {booking.finalAmount !== undefined && (
+
+              {hasFinalAmount && finalAmountNum !== null && (
                 <div className="flex justify-between items-center border-t border-border/60 pt-2 font-bold text-sm text-[#202522]">
                   <span>Final Total:</span>
-                  <span className="text-base font-black">${booking.finalAmount.toFixed(2)}</span>
+                  <span className="text-base font-black">${finalAmountNum.toFixed(2)}</span>
                 </div>
               )}
+
               <div className="flex justify-between items-center border-t border-border/60 pt-2">
                 <span className="text-muted-foreground">Payment Status:</span>
                 <Badge
                   variant={booking.paymentStatus === 'paid' ? 'success' : 'warning'}
                   className="text-[10px] uppercase font-bold"
                 >
-                  {booking.paymentStatus}
+                  {booking.paymentStatus || 'unpaid'}
                 </Badge>
               </div>
             </div>
@@ -303,7 +335,7 @@ export default function CustomerBookingDetailPage() {
                 <span>FixMate Repair Warranty</span>
               </div>
               <p className="text-[11px] text-muted-foreground leading-relaxed">
-                90-day comprehensive parts and workmanship guarantee on all completed services.
+                Comprehensive parts and workmanship guarantee on all completed services.
               </p>
             </div>
           </div>

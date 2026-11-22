@@ -212,7 +212,7 @@ export default function CustomerDashboardPage() {
 
                 <div className="flex items-center gap-4 self-end sm:self-center shrink-0">
                   <div className="text-right">
-                    <span className="font-black text-[#202522] text-base font-mono block">
+                    <span className="font-black text-[#202522] text-base block">
                       ${((booking.finalAmount ?? booking.basePrice) || 0).toFixed(2)}
                     </span>
                     <span className="text-[11px] text-muted-foreground capitalize font-medium">

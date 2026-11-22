@@ -126,7 +126,7 @@ function PaymentSuccessContent() {
 
           <div className="flex justify-between items-center text-graphite-light">
             <span>Booking ID</span>
-            <span className="font-mono font-bold text-graphite">
+            <span className="font-bold text-graphite">
               #{paymentData.bookingId.slice(-6).toUpperCase()}
             </span>
           </div>
@@ -140,7 +140,7 @@ function PaymentSuccessContent() {
 
           <div className="flex justify-between items-center text-graphite-light">
             <span>Stripe Reference</span>
-            <span className="font-mono text-[11px] text-graphite truncate max-w-[180px]">
+            <span className="text-[11px] text-graphite truncate max-w-[180px]">
               {paymentData.stripePaymentIntentId || paymentData.stripeSessionId}
             </span>
           </div>

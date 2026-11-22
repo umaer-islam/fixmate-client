@@ -116,7 +116,7 @@ export default function CustomerPaymentsPage() {
                     <div className="flex items-center gap-2 text-xs text-graphite-light mt-0.5">
                       <span>{new Date(p.createdAt).toLocaleDateString()}</span>
                       <span>•</span>
-                      <span className="font-mono text-[11px] truncate max-w-xs">
+                      <span className="text-[11px] truncate max-w-xs">
                         {p.stripePaymentIntentId || p.stripeSessionId || 'Stripe Checkout'}
                       </span>
                     </div>

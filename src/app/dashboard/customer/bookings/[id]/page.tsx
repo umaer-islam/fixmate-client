@@ -249,12 +249,12 @@ export default function CustomerBookingDetailPage() {
             <div className="p-4 bg-[#F5F3EE]/80 rounded-2xl border border-border/70 space-y-2 text-xs">
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground">Base Quote:</span>
-                <span className="font-mono font-bold text-foreground">${booking.basePrice.toFixed(2)}</span>
+                <span className="font-bold text-foreground">${booking.basePrice.toFixed(2)}</span>
               </div>
               {booking.finalAmount !== undefined && (
                 <div className="flex justify-between items-center border-t border-border/60 pt-2 font-bold text-sm text-[#202522]">
                   <span>Final Total:</span>
-                  <span className="font-mono text-base font-black">${booking.finalAmount.toFixed(2)}</span>
+                  <span className="text-base font-black">${booking.finalAmount.toFixed(2)}</span>
                 </div>
               )}
               <div className="flex justify-between items-center border-t border-border/60 pt-2">

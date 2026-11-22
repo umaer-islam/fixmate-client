@@ -144,7 +144,7 @@ export default function AdminPaymentsPage() {
               >
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs font-bold text-graphite">
+                    <span className="text-xs font-bold text-graphite">
                       Invoice #{p._id.slice(-6).toUpperCase()}
                     </span>
                     <PaymentBadge status={p.status} />
@@ -152,7 +152,7 @@ export default function AdminPaymentsPage() {
                   <div className="text-xs text-graphite-light flex items-center gap-3 flex-wrap">
                     <span>Date: {new Date(p.createdAt).toLocaleString()}</span>
                     <span>•</span>
-                    <span className="font-mono text-[11px] truncate max-w-xs">
+                    <span className="text-[11px] truncate max-w-xs">
                       {p.stripePaymentIntentId || p.stripeSessionId || 'Stripe Session'}
                     </span>
                   </div>

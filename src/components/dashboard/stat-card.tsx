@@ -66,7 +66,7 @@ export function StatCard({
         <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider block">
           {title}
         </span>
-        <div className={`text-3xl font-extrabold ${valueClassName} tracking-tight font-mono`}>
+        <div className={`text-3xl font-extrabold ${valueClassName} tracking-tight`}>
           {isLoading ? (
             <Skeleton className="h-8 w-16 my-0.5 rounded-lg" />
           ) : parsedNumber !== null ? (

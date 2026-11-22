@@ -135,7 +135,7 @@ export default function AdminBookingsPage() {
                 )}
                 <span className="relative z-10">{st}</span>
                 <span
-                  className={`relative z-10 text-[10px] px-1.5 py-0.5 rounded-full font-mono font-bold ${
+                  className={`relative z-10 text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
                     isActive ? 'bg-white/20 text-white' : 'bg-background/80 text-muted-foreground'
                   }`}
                 >
@@ -187,7 +187,7 @@ export default function AdminBookingsPage() {
                 >
                   <div className="space-y-1 flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-mono text-xs font-bold text-foreground">
+                      <span className="text-xs font-bold text-foreground">
                         #{b._id.slice(-6).toUpperCase()}
                       </span>
                       <span className="text-border">•</span>
@@ -224,7 +224,7 @@ export default function AdminBookingsPage() {
                       <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">
                         Invoice Amount
                       </span>
-                      <span className="text-lg font-black text-[#202522] font-mono">
+                      <span className="text-lg font-black text-[#202522]">
                         ${((b.finalAmount ?? b.basePrice) || 0).toFixed(2)}
                       </span>
                     </div>

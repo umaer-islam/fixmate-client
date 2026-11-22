@@ -416,7 +416,7 @@ export default function EditServicePage() {
                   <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">
                     Base Rate
                   </span>
-                  <span className="text-xl font-black text-[#202522] font-mono">
+                  <span className="text-xl font-black text-[#202522]">
                     ${basePrice ? parseFloat(basePrice).toFixed(2) : '0.00'}
                   </span>
                 </div>

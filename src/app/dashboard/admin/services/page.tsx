@@ -169,7 +169,7 @@ export default function AdminServicesModerationPage() {
                 )}
                 <span className="relative z-10">{tab.label}</span>
                 <span
-                  className={`relative z-10 text-[10px] px-1.5 py-0.5 rounded-full font-mono font-bold ${
+                  className={`relative z-10 text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
                     isActive ? 'bg-white/20 text-white' : 'bg-background/80 text-muted-foreground'
                   }`}
                 >
@@ -268,7 +268,7 @@ export default function AdminServicesModerationPage() {
                     <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">
                       Base Price
                     </span>
-                    <span className="text-2xl font-black text-[#202522] font-mono">
+                    <span className="text-2xl font-black text-[#202522]">
                       ${s.basePrice.toFixed(2)}
                     </span>
                   </div>

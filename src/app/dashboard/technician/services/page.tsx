@@ -173,7 +173,7 @@ export default function TechnicianServicesPage() {
                     <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">
                       Base Rate
                     </span>
-                    <span className="text-2xl font-black text-[#202522] font-mono">
+                    <span className="text-2xl font-black text-[#202522]">
                       ${s.basePrice.toFixed(2)}
                     </span>
                   </div>

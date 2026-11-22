@@ -106,7 +106,7 @@ export default function AboutPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
               <div>
-                <span className="text-3xl sm:text-4xl font-black text-[#F26A3D] font-mono block">
+                <span className="text-3xl sm:text-4xl font-black text-[#F26A3D] block">
                   <AnimatedCounter value={98.4} decimals={1} suffix="%" />
                 </span>
                 <span className="text-xs font-bold text-foreground uppercase tracking-wider mt-1 block">
@@ -114,7 +114,7 @@ export default function AboutPage() {
                 </span>
               </div>
               <div>
-                <span className="text-3xl sm:text-4xl font-black text-[#202522] font-mono block">
+                <span className="text-3xl sm:text-4xl font-black text-[#202522] block">
                   <AnimatedCounter value={15200} suffix="+" />
                 </span>
                 <span className="text-xs font-bold text-foreground uppercase tracking-wider mt-1 block">
@@ -122,7 +122,7 @@ export default function AboutPage() {
                 </span>
               </div>
               <div>
-                <span className="text-3xl sm:text-4xl font-black text-[#202522] font-mono block">
+                <span className="text-3xl sm:text-4xl font-black text-[#202522] block">
                   <AnimatedCounter value={90} suffix=" Days" />
                 </span>
                 <span className="text-xs font-bold text-foreground uppercase tracking-wider mt-1 block">
@@ -130,7 +130,7 @@ export default function AboutPage() {
                 </span>
               </div>
               <div>
-                <span className="text-3xl sm:text-4xl font-black text-[#F26A3D] font-mono block">
+                <span className="text-3xl sm:text-4xl font-black text-[#F26A3D] block">
                   <AnimatedCounter value={4.9} decimals={1} suffix=" / 5.0" />
                 </span>
                 <span className="text-xs font-bold text-foreground uppercase tracking-wider mt-1 block">

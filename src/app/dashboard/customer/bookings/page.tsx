@@ -176,7 +176,7 @@ export default function CustomerBookingsPage() {
               )}
               <span className="relative z-10">{tab.label}</span>
               <span
-                className={`relative z-10 text-[10px] px-1.5 py-0.5 rounded-full font-mono font-bold ${
+                className={`relative z-10 text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
                   isActive ? 'bg-white/20 text-white' : 'bg-muted text-muted-foreground'
                 }`}
               >
@@ -265,7 +265,7 @@ export default function CustomerBookingsPage() {
                     <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">
                       Amount
                     </span>
-                    <span className="text-xl font-black text-[#202522] font-mono">
+                    <span className="text-xl font-black text-[#202522]">
                       ${((b.finalAmount ?? b.basePrice) || 0).toFixed(2)}
                     </span>
                   </div>

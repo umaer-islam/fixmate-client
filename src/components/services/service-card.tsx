@@ -102,7 +102,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
             <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider block">
               Estimated Base
             </span>
-            <p className="text-xl font-black text-[#202522] font-mono leading-none mt-0.5">
+            <p className="text-xl font-black text-[#202522] leading-none mt-0.5">
               ${Number(service.basePrice).toFixed(2)}
             </p>
           </div>

@@ -92,7 +92,7 @@ export default function BookingPaymentCallbackPage() {
             <div className="p-4 bg-ivory rounded-2xl border border-graphite/10 text-left space-y-2 text-xs">
               <div className="flex justify-between text-graphite-light">
                 <span>Booking ID:</span>
-                <span className="font-mono font-bold text-graphite">{bookingId.slice(-6).toUpperCase()}</span>
+                <span className="font-bold text-graphite">{bookingId.slice(-6).toUpperCase()}</span>
               </div>
               {paymentStatus?.amount && (
                 <div className="flex justify-between text-graphite-light">

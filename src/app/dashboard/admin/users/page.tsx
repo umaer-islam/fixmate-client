@@ -145,7 +145,7 @@ export default function AdminUsersPage() {
                 )}
                 <span className="relative z-10">{tab.label}</span>
                 <span
-                  className={`relative z-10 text-[10px] px-1.5 py-0.5 rounded-full font-mono font-bold ${
+                  className={`relative z-10 text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
                     isActive ? 'bg-white/20 text-white' : 'bg-background/80 text-muted-foreground'
                   }`}
                 >

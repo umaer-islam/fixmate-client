@@ -128,7 +128,7 @@ export function BookingModal({ service, isOpen, onClose, onSuccess }: BookingMod
             <span className="text-muted-foreground text-[10px] uppercase font-bold tracking-wider block">
               Estimated Rate
             </span>
-            <span className="font-mono font-black text-[#202522] text-xl">${service.basePrice.toFixed(2)}</span>
+            <span className="font-black text-[#202522] text-xl">${service.basePrice.toFixed(2)}</span>
           </div>
           <div className="text-right">
             <span className="text-muted-foreground text-[10px] uppercase font-bold tracking-wider block">

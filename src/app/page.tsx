@@ -136,19 +136,19 @@ export default function HomePage() {
                 <FadeIn direction="up" delay={0.45}>
                   <div className="grid grid-cols-3 gap-6 pt-8 border-t border-border/80 max-w-lg mx-auto lg:mx-0 text-left">
                     <div>
-                      <p className="text-2xl sm:text-3xl font-black text-[#202522] font-mono">
+                      <p className="text-2xl sm:text-3xl font-black text-[#202522]">
                         <AnimatedCounter value={14850} suffix="+" />
                       </p>
                       <p className="text-xs font-semibold text-muted-foreground mt-0.5">Repairs Completed</p>
                     </div>
                     <div>
-                      <p className="text-2xl sm:text-3xl font-black text-[#202522] font-mono">
+                      <p className="text-2xl sm:text-3xl font-black text-[#202522]">
                         <AnimatedCounter value={4.9} decimals={1} suffix=" / 5" />
                       </p>
                       <p className="text-xs font-semibold text-muted-foreground mt-0.5">Customer Rating</p>
                     </div>
                     <div>
-                      <p className="text-2xl sm:text-3xl font-black text-[#202522] font-mono">
+                      <p className="text-2xl sm:text-3xl font-black text-[#202522]">
                         <AnimatedCounter value={100} suffix="%" />
                       </p>
                       <p className="text-xs font-semibold text-muted-foreground mt-0.5">Stripe Escrow Safe</p>
@@ -278,7 +278,7 @@ export default function HomePage() {
                 <FadeIn key={idx} direction="up" delay={0.1 * idx}>
                   <SpotlightCard className="h-full bg-background p-6 space-y-3 shadow-xs">
                     <div className="flex items-center justify-between">
-                      <span className="text-3xl font-black text-[#F26A3D]/40 font-mono">
+                      <span className="text-3xl font-black text-[#F26A3D]/40">
                         {item.step}
                       </span>
                       <Badge variant="sage" className="text-[10px] font-bold">
@@ -441,7 +441,7 @@ export default function HomePage() {
               <div className="lg:col-span-4 flex justify-center">
                 <div className="flex h-36 w-36 flex-col items-center justify-center rounded-3xl bg-[#202522] text-white p-4 shadow-xl text-center space-y-1">
                   <Award className="h-8 w-8 text-[#F26A3D]" />
-                  <span className="text-2xl font-black font-mono">90 DAYS</span>
+                  <span className="text-2xl font-black">90 DAYS</span>
                   <span className="text-[10px] text-white/70 uppercase tracking-widest font-bold">WARRANTY</span>
                 </div>
               </div>

@@ -320,7 +320,7 @@ export default function ServiceDetailPage() {
                     Base Service Price
                   </span>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-4xl font-black text-[#202522] font-mono">
+                    <span className="text-4xl font-black text-[#202522]">
                       ${service.basePrice.toFixed(2)}
                     </span>
                     <span className="text-xs text-muted-foreground font-semibold">starting price</span>

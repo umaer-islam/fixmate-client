@@ -5,22 +5,14 @@ import Link from 'next/link';
 import { motion } from 'motion/react';
 import {
   Wrench,
-  ShieldCheck,
-  CreditCard,
   Mail,
   Phone,
   MapPin,
   ArrowUp,
   ArrowRight,
-  CheckCircle2,
-  Sparkles,
-  Clock,
-  Shield,
-  Layers,
-  Award,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { buttonTapSpring, cardHoverSpring } from '@/lib/motion/tokens';
+import { buttonTapSpring } from '@/lib/motion/tokens';
 import { LiquidChrome } from '@/components/ui/liquid-chrome/liquid-chrome';
 
 export function Footer() {
@@ -34,7 +26,7 @@ export function Footer() {
       return;
     }
     setSubscribed(true);
-    toast.success('Subscribed to FixMate service updates & warranty alerts!');
+    toast.success('Subscribed to FixMate service updates!');
     setEmailInput('');
   };
 
@@ -45,13 +37,13 @@ export function Footer() {
   };
 
   const categories = [
-    { name: 'Smartphone', href: '/services?category=Smartphone', badge: 'Screen & Board' },
-    { name: 'Laptop & PC', href: '/services?category=Laptop+%26+PC', badge: 'Chip-Level' },
-    { name: 'AC', href: '/services?category=AC', badge: 'Inverter & Gas' },
-    { name: 'Refrigerator', href: '/services?category=Refrigerator', badge: 'Compressor' },
-    { name: 'TV', href: '/services?category=TV', badge: 'OLED Panels' },
-    { name: 'Washing Machine', href: '/services?category=Washing+Machine', badge: 'Motor & Drum' },
-    { name: 'Electrical', href: '/services?category=Electrical', badge: 'Wiring & Load' },
+    { name: 'Smartphone', href: '/services?category=Smartphone' },
+    { name: 'Laptop & PC', href: '/services?category=Laptop+%26+PC' },
+    { name: 'AC', href: '/services?category=AC' },
+    { name: 'Refrigerator', href: '/services?category=Refrigerator' },
+    { name: 'TV', href: '/services?category=TV' },
+    { name: 'Washing Machine', href: '/services?category=Washing+Machine' },
+    { name: 'Electrical', href: '/services?category=Electrical' },
   ];
 
   const quickLinks = [
@@ -75,7 +67,7 @@ export function Footer() {
         />
       </div>
 
-      {/* Background Ambient Glow (ReactBits Inspired) */}
+      {/* Background Ambient Glow */}
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden opacity-25">
         <div className="absolute -top-40 left-1/4 h-96 w-96 rounded-full bg-[#F26A3D]/20 blur-3xl" />
         <div className="absolute bottom-0 right-10 h-80 w-80 rounded-full bg-emerald-500/10 blur-3xl" />
@@ -83,7 +75,7 @@ export function Footer() {
 
       <div className="relative mx-auto max-w-7xl px-4 pt-16 pb-12 sm:px-6 lg:px-8">
         {/* =================================================================== */}
-        {/* PRE-FOOTER INTERACTIVE ACTION STRIP (MOTION BREW STYLE) */}
+        {/* PRE-FOOTER ACTION STRIP */}
         {/* =================================================================== */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -93,20 +85,16 @@ export function Footer() {
           className="mb-14 rounded-3xl border border-white/10 bg-gradient-to-r from-white/[0.07] via-white/[0.04] to-white/[0.07] p-6 sm:p-8 backdrop-blur-xl shadow-2xl"
         >
           <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
-            <div className="space-y-2 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/15 border border-emerald-500/30 px-3 py-1 text-[11px] font-bold text-emerald-400">
-                <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>Live Technician Dispatch Network Active</span>
-              </div>
+            <div className="space-y-1.5 text-center lg:text-left">
               <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
                 Got a broken device or faulty appliance?
               </h3>
               <p className="text-xs sm:text-sm text-white/70 max-w-xl">
-                Get priority repair diagnostics with zero upfront charge. Pay securely with Stripe only after your hardware is completely restored.
+                Get priority repair diagnostics with zero upfront charge. Pay securely only after your hardware is completely restored.
               </p>
             </div>
 
-            {/* Interactive Newsletter / Quick Quote Trigger */}
+            {/* Newsletter / Alerts */}
             <form onSubmit={handleSubscribe} className="w-full lg:w-auto flex flex-col sm:flex-row items-center gap-2.5">
               <div className="relative w-full sm:w-72">
                 <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
@@ -132,11 +120,11 @@ export function Footer() {
         </motion.div>
 
         {/* =================================================================== */}
-        {/* MAIN FOUR-COLUMN VALUE MATRIX */}
+        {/* MAIN NAVIGATION MATRIX */}
         {/* =================================================================== */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-white/10">
-          {/* Column 1: Brand & Authority (2 Cols wide on desktop) */}
-          <div className="lg:col-span-2 space-y-5">
+          {/* Column 1: Brand & Authority */}
+          <div className="lg:col-span-2 space-y-4">
             <Link href="/" className="inline-flex items-center gap-2.5 group">
               <motion.div
                 whileHover={{ rotate: 18, scale: 1.08 }}
@@ -151,31 +139,15 @@ export function Footer() {
             </Link>
 
             <p className="text-xs sm:text-sm text-white/70 leading-relaxed max-w-sm">
-              The premier on-demand repair platform for precision smart devices and major home appliances. Verified background-checked technicians, transparent quotes, and Stripe escrow protection.
+              The premier on-demand repair platform for precision smart devices and major home appliances. Verified technicians, transparent quotes, and secure escrow payments.
             </p>
 
-            {/* Trust Badges Pill Strip */}
-            <div className="flex flex-wrap items-center gap-2 pt-1">
-              <span className="inline-flex items-center gap-1.5 rounded-xl bg-white/5 border border-white/10 px-3 py-1 text-[11px] font-semibold text-white/85">
-                <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
-                90-Day Warranty
-              </span>
-              <span className="inline-flex items-center gap-1.5 rounded-xl bg-white/5 border border-white/10 px-3 py-1 text-[11px] font-semibold text-white/85">
-                <CreditCard className="h-3.5 w-3.5 text-[#F26A3D]" />
-                Zero Upfront Fee
-              </span>
-              <span className="inline-flex items-center gap-1.5 rounded-xl bg-white/5 border border-white/10 px-3 py-1 text-[11px] font-semibold text-white/85">
-                <Sparkles className="h-3.5 w-3.5 text-amber-400" />
-                Vetted Technicians
-              </span>
-            </div>
-
-            {/* Social Media Links with New X Logo */}
-            <div className="flex items-center gap-3 pt-2">
+            {/* Social Media Links */}
+            <div className="flex items-center gap-3 pt-1">
               <span className="text-[11px] font-semibold text-white/50 uppercase tracking-wider mr-1">
                 Follow Us
               </span>
-              {/* New X (Twitter) Logo */}
+              {/* X (Twitter) */}
               <motion.a
                 whileHover={{ scale: 1.12, y: -2 }}
                 whileTap={buttonTapSpring}
@@ -256,13 +228,11 @@ export function Footer() {
                 <li key={cat.name}>
                   <Link
                     href={cat.href}
-                    className="group flex items-center justify-between hover:text-[#F26A3D] transition-colors"
+                    className="group inline-flex items-center gap-1.5 hover:text-[#F26A3D] transition-colors"
                   >
+                    <span className="text-white/20 group-hover:text-[#F26A3D] transition-colors">•</span>
                     <span className="group-hover:translate-x-1 transition-transform duration-200">
                       {cat.name}
-                    </span>
-                    <span className="text-[10px] text-white/40 group-hover:text-emerald-400 font-medium transition-colors">
-                      {cat.badge}
                     </span>
                   </Link>
                 </li>
@@ -276,31 +246,24 @@ export function Footer() {
               <span className="h-1.5 w-1.5 rounded-full bg-[#F26A3D]" />
               Direct Support
             </h4>
-            <ul className="space-y-3.5 text-xs text-white/70">
-              <li className="flex items-start gap-2.5">
-                <Mail className="h-4 w-4 text-[#F26A3D] shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-semibold text-white/90">Customer Desk</p>
-                  <a href="mailto:support@fixmate.io" className="text-white/60 hover:text-[#F26A3D] transition-colors">
-                    support@fixmate.io
-                  </a>
-                </div>
+            <ul className="space-y-3 text-xs text-white/70">
+              <li className="flex items-center gap-2.5">
+                <Mail className="h-4 w-4 text-[#F26A3D] shrink-0" />
+                <a href="mailto:support@fixmate.io" className="text-white/70 hover:text-[#F26A3D] transition-colors">
+                  support@fixmate.io
+                </a>
               </li>
-              <li className="flex items-start gap-2.5">
-                <Phone className="h-4 w-4 text-[#F26A3D] shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-semibold text-white/90">Emergency Hotline</p>
-                  <a href="tel:+18003496283" className="text-white/60 hover:text-[#F26A3D] transition-colors">
-                    +1 (800) FIX-MATE
-                  </a>
-                </div>
+              <li className="flex items-center gap-2.5">
+                <Phone className="h-4 w-4 text-[#F26A3D] shrink-0" />
+                <a href="tel:+18003496283" className="text-white/70 hover:text-[#F26A3D] transition-colors">
+                  +1 (800) FIX-MATE
+                </a>
               </li>
-              <li className="flex items-start gap-2.5">
-                <MapPin className="h-4 w-4 text-[#F26A3D] shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-semibold text-white/90">Central Tech Hub</p>
-                  <span className="text-white/60 leading-relaxed">Austin Lab & Nationwide Certified Dispatch</span>
-                </div>
+              <li className="flex items-center gap-2.5">
+                <MapPin className="h-4 w-4 text-[#F26A3D] shrink-0" />
+                <span className="text-white/70">
+                  Austin, TX &amp; Nationwide
+                </span>
               </li>
             </ul>
           </div>
@@ -310,14 +273,7 @@ export function Footer() {
         {/* BOTTOM METADATA & BACK TO TOP BAR */}
         {/* =================================================================== */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/50">
-          <div className="flex flex-wrap items-center gap-3">
-            <p>© {new Date().getFullYear()} FixMate Repair Inc. All rights reserved.</p>
-            <span className="hidden sm:inline text-white/20">•</span>
-            <span className="text-emerald-400/90 font-medium flex items-center gap-1.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              PCI-DSS Stripe Encrypted
-            </span>
-          </div>
+          <p>© {new Date().getFullYear()} FixMate Repair Inc. All rights reserved.</p>
 
           <div className="flex items-center gap-5">
             <Link href="/terms" className="hover:text-white transition-colors">

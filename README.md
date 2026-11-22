@@ -6,10 +6,10 @@ FixMate is a full-stack, enterprise-grade repair service management platform con
 
 ## 🚀 Live Demo & Repository Links
 
-- **Frontend Client:** [FixMate Client](https://fixmate-client.vercel.app)
-- **Backend API:** [FixMate API Server](https://fixmate-server.onrender.com)
-- **GitHub Client Repo:** `fixmate-client`
-- **GitHub Server Repo:** `fixmate-server`
+- **Frontend Client (Live Site):** [https://fixmate23.vercel.app](https://fixmate23.vercel.app)
+- **Backend API (Render):** [https://fixmate-server-h0gr.onrender.com](https://fixmate-server-h0gr.onrender.com)
+- **GitHub Client Repository:** [https://github.com/umaer-islam/fixmate-client](https://github.com/umaer-islam/fixmate-client)
+- **GitHub Server Repository:** [https://github.com/umaer-islam/fixmate-server](https://github.com/umaer-islam/fixmate-server)
 
 ---
 

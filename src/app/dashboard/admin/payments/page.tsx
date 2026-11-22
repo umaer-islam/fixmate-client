@@ -6,6 +6,7 @@ import { api } from '@/lib/api-client';
 import { DashboardShell } from '@/components/dashboard/dashboard-shell';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { PaymentBadge } from '@/components/dashboard/payment-badge';
 import { DollarSign, CreditCard, ShieldCheck, Search, ArrowRight, ExternalLink } from 'lucide-react';
 
 interface AdminPaymentRecord {
@@ -146,9 +147,7 @@ export default function AdminPaymentsPage() {
                     <span className="font-mono text-xs font-bold text-graphite">
                       Invoice #{p._id.slice(-6).toUpperCase()}
                     </span>
-                    <Badge variant="success" className="text-[10px] uppercase font-bold">
-                      {p.status}
-                    </Badge>
+                    <PaymentBadge status={p.status} />
                   </div>
                   <div className="text-xs text-graphite-light flex items-center gap-3 flex-wrap">
                     <span>Date: {new Date(p.createdAt).toLocaleString()}</span>

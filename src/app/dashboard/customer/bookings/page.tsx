@@ -6,6 +6,7 @@ import { api } from '@/lib/api-client';
 import { DashboardShell } from '@/components/dashboard/dashboard-shell';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { PaymentBadge } from '@/components/dashboard/payment-badge';
 import { toast } from 'sonner';
 import {
   Calendar,
@@ -222,12 +223,7 @@ export default function CustomerBookingsPage() {
               <div className="flex sm:flex-col items-center sm:items-end justify-between gap-2 border-t sm:border-t-0 pt-4 sm:pt-0 border-graphite/10">
                 <div className="flex items-center gap-2">
                   {getStatusBadge(b.status)}
-                  <Badge
-                    variant={b.paymentStatus === 'paid' ? 'success' : 'warning'}
-                    className="capitalize text-[10px]"
-                  >
-                    {b.paymentStatus}
-                  </Badge>
+                  <PaymentBadge status={b.paymentStatus} />
                 </div>
                 <div className="sm:text-right">
                   <span className="text-xs text-graphite-light block">Amount</span>

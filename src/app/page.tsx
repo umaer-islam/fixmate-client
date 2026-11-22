@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { motion } from 'motion/react';
 import {
   Wrench,
   Smartphone,
@@ -14,31 +13,25 @@ import {
   Zap,
   ShieldCheck,
   CheckCircle2,
-  Clock,
-  CreditCard,
   ArrowRight,
-  Star,
-  MapPin,
   ChevronRight,
-  Sparkles,
   Lock,
   Award,
 } from 'lucide-react';
+import { motion } from 'motion/react';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { api } from '@/lib/api-client';
 import { ServiceCard } from '@/components/services/service-card';
 import { Hero10 } from '@/components/ui/hero-10';
-import { SplitText } from '@/components/motion/split-text';
 import { AnimatedCounter } from '@/components/motion/animated-counter';
 import { SpotlightCard } from '@/components/motion/spotlight-card';
 import { FadeIn } from '@/components/motion/fade-in';
 import { StaggerList, StaggerItem } from '@/components/motion/stagger-list';
 import { MotionButton } from '@/components/motion/motion-button';
-import { buttonTapSpring, cardHoverSpring } from '@/lib/motion/tokens';
+import { buttonTapSpring } from '@/lib/motion/tokens';
 
 interface ServiceItem {
   _id: string;
@@ -117,23 +110,13 @@ export default function HomePage() {
 
       <main className="flex-1">
         {/* =================================================================== */}
-        {/* HERO SECTION (HERO10 FAN SHOWCASE) */}
+        {/* HERO SECTION */}
         {/* =================================================================== */}
         <Hero10
-          badge={
-            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-bold text-[#202522] shadow-xs">
-              <span className="flex h-2 w-2 rounded-full bg-[#F26A3D] animate-ping" />
-              <span className="flex h-2 w-2 rounded-full bg-[#F26A3D]" />
-              <span className="tracking-wide">FixMate Verified Repair Network</span>
-              <span className="hidden sm:inline text-muted-foreground">•</span>
-              <span className="hidden sm:inline text-emerald-600 font-semibold">Zero Upfront Fee</span>
-            </div>
-          }
           title="Precision Repair for Smart Devices"
           titleLine2Prefix="&"
           titleHighlight="Home Appliances"
-          description="Connect with vetted local technicians across smartphones, laptops, AC units, and major household appliances. Inspect the completed repair first, then pay securely through Stripe with an authoritative 90-Day Warranty."
-          socialProof="Trusted by 14,800+ completed repairs • 4.9/5.0 Customer Rating • Stripe Escrow Safe"
+          description="Connect with vetted local technicians across smartphones, laptops, AC units, and household appliances. Inspect the completed repair first, then pay securely through Stripe with an authoritative 90-Day Warranty."
           images={[
             'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?auto=format&fit=crop&w=800&q=80',
             'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80',
@@ -199,15 +182,12 @@ export default function HomePage() {
         <section className="py-20 border-b border-border bg-card">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <FadeIn direction="up">
-              <div className="text-center max-w-2xl mx-auto space-y-3 mb-16">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#F26A3D]">
-                  Transparent Repair Lifecycle
-                </span>
+              <div className="text-center max-w-2xl mx-auto space-y-2 mb-14">
                 <h2 className="text-3xl sm:text-4xl font-extrabold text-[#202522] font-heading">
-                  How FixMate Protects Every Job
+                  How FixMate Works
                 </h2>
                 <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                  From initial request to final sign-off, experience a verified repair flow designed for total customer and technician confidence.
+                  From initial request to final sign-off, experience a verified repair flow designed for total customer confidence.
                 </p>
               </div>
             </FadeIn>
@@ -218,37 +198,28 @@ export default function HomePage() {
                   step: '01',
                   title: 'Select & Book',
                   desc: 'Pick your device category and select an approved service with transparent upfront base pricing.',
-                  badge: 'Zero Upfront',
                 },
                 {
                   step: '02',
                   title: 'Technician Confirms',
                   desc: 'A verified local specialist reviews and accepts your request with scheduling confirmation.',
-                  badge: 'Vetted Pro',
                 },
                 {
                   step: '03',
                   title: 'Repair & Test',
                   desc: 'Work is performed on-site or at the workshop. Hardware is tested before final invoice.',
-                  badge: 'In-Depth Diagnostic',
                 },
                 {
                   step: '04',
                   title: 'Pay via Stripe',
                   desc: 'Inspect the resolved repair, then pay securely through Stripe with 90-day warranty coverage.',
-                  badge: 'Escrow Protected',
                 },
               ].map((item, idx) => (
                 <FadeIn key={idx} direction="up" delay={0.1 * idx}>
                   <SpotlightCard className="h-full bg-background p-6 space-y-3 shadow-xs">
-                    <div className="flex items-center justify-between">
-                      <span className="text-3xl font-black text-[#F26A3D]/40">
-                        {item.step}
-                      </span>
-                      <Badge variant="sage" className="text-[10px] font-bold">
-                        {item.badge}
-                      </Badge>
-                    </div>
+                    <span className="text-3xl font-black text-[#F26A3D]/40">
+                      {item.step}
+                    </span>
                     <h3 className="text-base font-bold text-foreground">
                       {item.title}
                     </h3>
@@ -263,22 +234,18 @@ export default function HomePage() {
         </section>
 
         {/* =================================================================== */}
-        {/* REPAIR CATEGORIES SPECTRUM (CLEAN & MINIMAL 7-CATEGORY GRID) */}
+        {/* REPAIR CATEGORIES */}
         {/* =================================================================== */}
         <section className="py-20 border-b border-border bg-[#F5F3EE]">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <FadeIn direction="up">
               <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-10">
-                <div className="space-y-2">
-                  <div className="inline-flex items-center gap-2 rounded-full bg-[#202522]/5 px-3 py-1 text-xs font-bold text-[#202522]">
-                    <Wrench className="h-3.5 w-3.5 text-[#F26A3D]" />
-                    <span>Specialized Hardware Disciplines</span>
-                  </div>
+                <div className="space-y-1">
                   <h2 className="text-3xl sm:text-4xl font-extrabold text-[#202522] tracking-tight">
-                    7 Core Repair Categories
+                    Repair Categories
                   </h2>
                   <p className="text-xs sm:text-sm text-muted-foreground max-w-xl">
-                    Select your equipment category to browse verified, background-checked technicians with guaranteed turnaround times.
+                    Select your equipment category to browse verified, background-checked technicians.
                   </p>
                 </div>
                 <Link href="/services">
@@ -290,7 +257,7 @@ export default function HomePage() {
               </div>
             </FadeIn>
 
-            {/* Clean, balanced 7-column grid on desktop, 3-4 col on tablet, 2 col on mobile */}
+            {/* Clean, balanced 7-column grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3 sm:gap-4">
               {CATEGORIES.map((cat, idx) => {
                 const Icon = cat.icon;
@@ -314,10 +281,6 @@ export default function HomePage() {
                           {cat.tagline}
                         </p>
                       </div>
-                      <div className="mt-4 pt-3 border-t border-border/40 flex items-center text-[10px] font-bold text-[#F26A3D] group-hover:underline">
-                        <span>Browse Repairs</span>
-                        <ArrowRight className="h-3 w-3 ml-1" />
-                      </div>
                     </Link>
                   </FadeIn>
                 );
@@ -334,10 +297,7 @@ export default function HomePage() {
             <FadeIn direction="up">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-12">
                 <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-[#F26A3D]">
-                    Top Rated & Vetted
-                  </span>
-                  <h2 className="text-3xl sm:text-4xl font-extrabold text-[#202522] font-heading mt-1">
+                  <h2 className="text-3xl sm:text-4xl font-extrabold text-[#202522] font-heading">
                     Featured Repair Services
                   </h2>
                 </div>
@@ -382,41 +342,37 @@ export default function HomePage() {
         </section>
 
         {/* =================================================================== */}
-        {/* TRUST & 90-DAY WARRANTY SECTION */}
+        {/* 90-DAY WARRANTY GUARANTEE */}
         {/* =================================================================== */}
         <section className="py-20 border-b border-border bg-[#F5F3EE]/60">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="rounded-3xl border border-border/80 bg-card p-8 sm:p-12 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               <div className="lg:col-span-8 space-y-4">
-                <div className="inline-flex items-center gap-2 rounded-xl bg-emerald-500/10 px-3 py-1.5 text-xs font-bold text-emerald-700">
-                  <Award className="h-4 w-4" />
-                  <span>FixMate Ironclad Repair Guarantee</span>
-                </div>
                 <h3 className="text-2xl sm:text-3xl font-extrabold text-[#202522] font-heading">
-                  90-Day Parts & Labor Warranty Included on All Paid Jobs
+                  90-Day Parts & Labor Warranty on All Repairs
                 </h3>
                 <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                   Every settled repair carries a 90-day guarantee against recurrence of the diagnosed defect. If your device exhibits the same issue within three months, your technician will re-inspect and remediate at no additional diagnostic fee.
                 </p>
-                <div className="flex flex-wrap items-center gap-4 pt-2">
-                  <span className="flex items-center gap-1.5 text-xs font-bold text-foreground">
+                <div className="flex flex-wrap items-center gap-5 pt-2 text-xs font-semibold text-foreground">
+                  <span className="flex items-center gap-1.5">
                     <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                    100% Genuine Tested Components
+                    Genuine Tested Components
                   </span>
-                  <span className="flex items-center gap-1.5 text-xs font-bold text-foreground">
+                  <span className="flex items-center gap-1.5">
                     <Lock className="h-4 w-4 text-emerald-600" />
-                    Stripe PCI-DSS Escrow Protection
+                    Stripe Escrow Protection
                   </span>
-                  <span className="flex items-center gap-1.5 text-xs font-bold text-foreground">
+                  <span className="flex items-center gap-1.5">
                     <ShieldCheck className="h-4 w-4 text-emerald-600" />
-                    Identity-Verified Technicians
+                    Verified Technicians
                   </span>
                 </div>
               </div>
 
               <div className="lg:col-span-4 flex justify-center">
-                <div className="flex h-36 w-36 flex-col items-center justify-center rounded-3xl bg-[#202522] text-white p-4 shadow-xl text-center space-y-1">
-                  <Award className="h-8 w-8 text-[#F26A3D]" />
+                <div className="flex h-32 w-32 flex-col items-center justify-center rounded-3xl bg-[#202522] text-white p-4 shadow-xl text-center space-y-1">
+                  <Award className="h-7 w-7 text-[#F26A3D]" />
                   <span className="text-2xl font-black">90 DAYS</span>
                   <span className="text-[10px] text-white/70 uppercase tracking-widest font-bold">WARRANTY</span>
                 </div>
@@ -426,7 +382,7 @@ export default function HomePage() {
         </section>
 
         {/* =================================================================== */}
-        {/* CALL TO ACTION (REACT BITS CLEAN, MINIMAL & ANIMATED REDESIGN) */}
+        {/* CALL TO ACTION */}
         {/* =================================================================== */}
         <section className="py-20 sm:py-28 bg-[#F5F3EE] relative overflow-hidden">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -449,18 +405,6 @@ export default function HomePage() {
                 />
 
                 <div className="relative z-10 max-w-3xl mx-auto space-y-6">
-                  {/* Shimmer Pill Badge */}
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                    className="inline-flex items-center gap-2 rounded-full border border-[#F26A3D]/30 bg-[#F26A3D]/10 px-4 py-1.5 text-xs font-bold text-[#F26A3D] backdrop-blur-md cursor-default"
-                  >
-                    <Sparkles className="h-3.5 w-3.5 animate-spin text-[#F26A3D]" style={{ animationDuration: '8s' }} />
-                    <span className="tracking-wide">Get Started Today</span>
-                    <span className="text-white/30">•</span>
-                    <span className="text-emerald-400 font-semibold">100% Risk Free</span>
-                  </motion.div>
-
                   {/* Headline with High-Contrast Typography & Brand Gradient */}
                   <h2 className="text-3xl sm:text-4xl md:text-5xl font-black font-heading text-white tracking-tight leading-[1.12]">
                     Ready to Repair Your Device with{' '}
@@ -475,30 +419,8 @@ export default function HomePage() {
                     Join over 14,800 device owners who trust FixMate for transparent pricing, certified on-site diagnostic tests, and post-repair Stripe protection.
                   </p>
 
-                  {/* Interactive Perks Strip (ReactBits / Motion Brew) */}
-                  <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 pt-2">
-                    {[
-                      { icon: ShieldCheck, label: '90-Day Parts & Labor Warranty', color: 'text-emerald-400' },
-                      { icon: CreditCard, label: 'Pay Only After Completion', color: 'text-[#F26A3D]' },
-                      { icon: CheckCircle2, label: 'Zero Upfront Diagnostic Fee', color: 'text-amber-400' },
-                    ].map((perk, i) => {
-                      const Icon = perk.icon;
-                      return (
-                        <motion.div
-                          key={i}
-                          whileHover={{ y: -2, scale: 1.02 }}
-                          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                          className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 text-[11px] font-semibold text-white/90 backdrop-blur-sm shadow-xs"
-                        >
-                          <Icon className={`h-3.5 w-3.5 ${perk.color}`} />
-                          <span>{perk.label}</span>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-
                   {/* Dual Action CTA Buttons */}
-                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-4">
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-2">
                     <Link href="/services" className="w-full sm:w-auto">
                       <motion.div whileHover={{ scale: 1.03 }} whileTap={buttonTapSpring}>
                         <Button
@@ -524,9 +446,9 @@ export default function HomePage() {
                     </Link>
                   </div>
 
-                  {/* Micro Trust Proof */}
-                  <p className="text-[11px] text-white/40 pt-2 font-medium">
-                    No credit card required to request • Cancel anytime before technician acceptance
+                  {/* Micro Reassurance */}
+                  <p className="text-[11px] text-white/40 pt-1 font-medium">
+                    No upfront charges • Pay only after inspection and approval
                   </p>
                 </div>
               </SpotlightCard>

@@ -28,13 +28,39 @@ export class ApiError extends Error {
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
+// Fast client-side in-memory cache for GET requests (20s TTL)
+const getCache = new Map<string, { data: any; expiry: number }>();
+
+export function clearApiCache(endpointPrefix?: string) {
+  if (!endpointPrefix) {
+    getCache.clear();
+  } else {
+    for (const key of getCache.keys()) {
+      if (key.includes(endpointPrefix)) {
+        getCache.delete(key);
+      }
+    }
+  }
+}
+
 export async function apiClient<T = any>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<ApiResponse<T>> {
+  const method = (options.method || 'GET').toUpperCase();
   const url = endpoint.startsWith('http')
     ? endpoint
     : `${API_BASE_URL}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
+
+  // Serve from memory cache if GET request and still fresh
+  const isGet = method === 'GET';
+  const cacheKey = `${url}`;
+  if (isGet && typeof window !== 'undefined' && options.cache !== 'no-store') {
+    const cached = getCache.get(cacheKey);
+    if (cached && Date.now() < cached.expiry) {
+      return cached.data;
+    }
+  }
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -75,6 +101,16 @@ export async function apiClient<T = any>(
       data?.error ||
       `Request failed with status ${response.status}`;
     throw new ApiError(message, response.status, data);
+  }
+
+  // Cache successful GET responses for 20 seconds
+  if (isGet && typeof window !== 'undefined' && data?.success) {
+    getCache.set(cacheKey, { data, expiry: Date.now() + 20_000 });
+  }
+
+  // On data-mutating requests (POST, PATCH, DELETE), invalidate cache
+  if (!isGet) {
+    clearApiCache();
   }
 
   return data;

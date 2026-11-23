@@ -46,12 +46,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const res = await api.get<User>('/users/profile');
       if (res.success && res.data) {
         setUser(res.data);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('fixmate_user', JSON.stringify(res.data));
+        }
         return res.data;
       }
       return null;
     } catch (err: any) {
       if (err?.status === 401) {
-        localStorage.removeItem('fixmate_token');
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('fixmate_token');
+          localStorage.removeItem('fixmate_user');
+        }
         setToken(null);
         setUser(null);
       }
@@ -60,13 +66,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
+    // 1. Instant hydration from localStorage (0ms time-to-interactive)
     const savedToken = localStorage.getItem('fixmate_token');
+    const savedUser = localStorage.getItem('fixmate_user');
+
+    if (savedUser) {
+      try {
+        const parsed = JSON.parse(savedUser);
+        setUser(parsed);
+        setIsLoading(false); // Unblock protected routes instantly
+      } catch {
+        // malformed cached user
+      }
+    }
+
+    // 2. Background revalidation
     if (savedToken) {
       setToken(savedToken);
       fetchProfile().finally(() => setIsLoading(false));
     } else {
       setIsLoading(false);
     }
+
+    // 3. Keep-alive ping every 7 minutes to prevent Render free-tier cold sleep
+    const keepAliveInterval = setInterval(() => {
+      api.get('/health').catch(() => {});
+    }, 7 * 60 * 1000);
+
+    return () => clearInterval(keepAliveInterval);
   }, [fetchProfile]);
 
   const login = async (email: string, password: string): Promise<User> => {
@@ -104,6 +131,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       name: data?.user?.name,
       role: data?.user?.role || 'customer',
     };
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('fixmate_user', JSON.stringify(fallbackUser));
+    }
     setUser(fallbackUser);
     return fallbackUser;
   };
@@ -155,6 +185,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       name,
       role,
     };
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('fixmate_user', JSON.stringify(fallbackUser));
+    }
     setUser(fallbackUser);
     return fallbackUser;
   };
@@ -168,7 +201,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch {
       // ignore
     } finally {
-      localStorage.removeItem('fixmate_token');
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('fixmate_token');
+        localStorage.removeItem('fixmate_user');
+      }
       setToken(null);
       setUser(null);
     }

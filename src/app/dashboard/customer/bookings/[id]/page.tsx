@@ -99,14 +99,15 @@ export default function CustomerBookingDetailPage() {
   const handlePay = async () => {
     try {
       setIsProcessing(true);
-      const res = await api.post<{ sessionUrl: string; sessionId: string }>(
+      const res = await api.post<{ url?: string; sessionUrl?: string; sessionId: string }>(
         '/payments/create-checkout-session',
         { bookingId }
       );
 
-      if (res.data?.sessionUrl) {
+      const redirectUrl = res.data?.url || res.data?.sessionUrl || (res as any)?.url;
+      if (redirectUrl) {
         toast.info('Redirecting to Stripe Checkout...');
-        window.location.href = res.data.sessionUrl;
+        window.location.href = redirectUrl;
       } else {
         toast.error('Unable to initialize payment session.');
       }

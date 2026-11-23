@@ -57,19 +57,19 @@ export default function CustomerBookingDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const fetchBooking = async () => {
+  const fetchBooking = async (silent = false) => {
     if (!bookingId) return;
     try {
-      setIsLoading(true);
+      if (!silent) setIsLoading(true);
       setError(null);
       const res = await api.get<BookingDetail>(`/bookings/${bookingId}`);
       if (res.data) {
         setBooking(res.data);
       } else {
-        setError('Booking details could not be found.');
+        if (!silent) setError('Booking details could not be found.');
       }
     } catch (err: any) {
-      setError(err?.message || 'Failed to load booking details.');
+      if (!silent) setError(err?.message || 'Failed to load booking details.');
     } finally {
       setIsLoading(false);
     }
@@ -77,7 +77,29 @@ export default function CustomerBookingDetailPage() {
 
   useEffect(() => {
     if (bookingId) {
-      fetchBooking();
+      // 1. Instant 0ms hydration from customer bookings cache
+      let hasCachedData = false;
+      if (typeof window !== 'undefined') {
+        try {
+          const cached = sessionStorage.getItem('fixmate_cached_customer_bookings');
+          if (cached) {
+            const list = JSON.parse(cached);
+            if (Array.isArray(list)) {
+              const found = list.find((b: any) => b._id === bookingId);
+              if (found) {
+                setBooking(found);
+                setIsLoading(false);
+                hasCachedData = true;
+              }
+            }
+          }
+        } catch {
+          // ignore cache parse errors
+        }
+      }
+
+      // 2. Revalidate in background
+      fetchBooking(hasCachedData);
     }
   }, [bookingId]);
 

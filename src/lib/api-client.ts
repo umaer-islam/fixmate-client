@@ -28,17 +28,24 @@ export class ApiError extends Error {
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
-// Fast client-side in-memory cache for GET requests (20s TTL)
+// Fast multi-tier client-side cache for GET requests (45s TTL)
 const getCache = new Map<string, { data: any; expiry: number }>();
+const CACHE_PREFIX = 'fixmate_api_cache_';
 
 export function clearApiCache(endpointPrefix?: string) {
-  if (!endpointPrefix) {
-    getCache.clear();
-  } else {
-    for (const key of getCache.keys()) {
-      if (key.includes(endpointPrefix)) {
-        getCache.delete(key);
+  getCache.clear();
+  if (typeof window !== 'undefined') {
+    try {
+      for (let i = sessionStorage.length - 1; i >= 0; i--) {
+        const key = sessionStorage.key(i);
+        if (key && key.startsWith(CACHE_PREFIX)) {
+          if (!endpointPrefix || key.includes(endpointPrefix)) {
+            sessionStorage.removeItem(key);
+          }
+        }
       }
+    } catch {
+      // ignore sessionStorage access errors
     }
   }
 }
@@ -52,13 +59,28 @@ export async function apiClient<T = any>(
     ? endpoint
     : `${API_BASE_URL}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
 
-  // Serve from memory cache if GET request and still fresh
+  // Multi-tier cache lookup for GET requests: memory -> sessionStorage
   const isGet = method === 'GET';
-  const cacheKey = `${url}`;
+  const storageKey = `${CACHE_PREFIX}${url}`;
   if (isGet && typeof window !== 'undefined' && options.cache !== 'no-store') {
-    const cached = getCache.get(cacheKey);
-    if (cached && Date.now() < cached.expiry) {
-      return cached.data;
+    // 1. In-memory lookup (0ms)
+    const memoryCached = getCache.get(url);
+    if (memoryCached && Date.now() < memoryCached.expiry) {
+      return memoryCached.data;
+    }
+
+    // 2. SessionStorage lookup (survives route switches & soft reloads)
+    try {
+      const stored = sessionStorage.getItem(storageKey);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed && Date.now() < parsed.expiry) {
+          getCache.set(url, parsed);
+          return parsed.data;
+        }
+      }
+    } catch {
+      // ignore JSON parse or storage errors
     }
   }
 
@@ -103,9 +125,15 @@ export async function apiClient<T = any>(
     throw new ApiError(message, response.status, data);
   }
 
-  // Cache successful GET responses for 20 seconds
+  // Cache successful GET responses for 45 seconds across memory and session
   if (isGet && typeof window !== 'undefined' && data?.success) {
-    getCache.set(cacheKey, { data, expiry: Date.now() + 20_000 });
+    const cacheEntry = { data, expiry: Date.now() + 45_000 };
+    getCache.set(url, cacheEntry);
+    try {
+      sessionStorage.setItem(storageKey, JSON.stringify(cacheEntry));
+    } catch {
+      // storage limit or disabled
+    }
   }
 
   // On data-mutating requests (POST, PATCH, DELETE), invalidate cache

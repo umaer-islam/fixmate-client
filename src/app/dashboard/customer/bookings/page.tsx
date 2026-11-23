@@ -49,20 +49,43 @@ export default function CustomerBookingsPage() {
   const [processingId, setProcessingId] = useState<string | null>(null);
   const [cancellingBooking, setCancellingBooking] = useState<{ id: string; title: string } | null>(null);
 
-  const fetchBookings = async () => {
+  const fetchBookings = async (silent = false) => {
     try {
-      setIsLoading(true);
+      if (!silent) setIsLoading(true);
       const res = await api.get<Booking[]>('/bookings/my');
-      setBookings(res.data || []);
+      const data = res.data || [];
+      setBookings(data);
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('fixmate_cached_customer_bookings', JSON.stringify(data));
+      }
     } catch (err: any) {
-      toast.error(err?.message || 'Failed to fetch bookings');
+      if (!silent) toast.error(err?.message || 'Failed to fetch bookings');
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchBookings();
+    // 1. Instant 0ms hydration from session storage
+    let hasCachedData = false;
+    if (typeof window !== 'undefined') {
+      try {
+        const cached = sessionStorage.getItem('fixmate_cached_customer_bookings');
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setBookings(parsed);
+            setIsLoading(false);
+            hasCachedData = true;
+          }
+        }
+      } catch {
+        // ignore JSON parse errors
+      }
+    }
+
+    // 2. Background revalidation (silent if cached data already shown)
+    fetchBookings(hasCachedData);
   }, []);
 
   const handleConfirmCancel = async (_reason?: string) => {

@@ -88,12 +88,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(false);
     }
 
-    // 3. Keep-alive ping every 7 minutes to prevent Render free-tier cold sleep
-    const keepAliveInterval = setInterval(() => {
-      api.get('/health').catch(() => {});
-    }, 7 * 60 * 1000);
+    // 3. Keep-alive ping and focus warm-up to prevent Render free-tier sleep
+    const pingHealth = () => {
+      api.get('/health', { cache: 'no-store' }).catch(() => {});
+    };
 
-    return () => clearInterval(keepAliveInterval);
+    const keepAliveInterval = setInterval(pingHealth, 5 * 60 * 1000);
+
+    const handleVisibilityChange = () => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
+        pingHealth();
+      }
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('focus', handleVisibilityChange);
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+    }
+
+    return () => {
+      clearInterval(keepAliveInterval);
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('focus', handleVisibilityChange);
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+      }
+    };
   }, [fetchProfile]);
 
   const login = async (email: string, password: string): Promise<User> => {

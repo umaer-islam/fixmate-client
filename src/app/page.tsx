@@ -85,11 +85,30 @@ export default function HomePage() {
   const [loadingServices, setLoadingServices] = useState(true);
 
   useEffect(() => {
+    // 1. Instant 0ms hydration from cache
+    if (typeof window !== 'undefined') {
+      try {
+        const cached = sessionStorage.getItem('fixmate_cached_featured');
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setFeaturedServices(parsed);
+            setLoadingServices(false);
+          }
+        }
+      } catch {
+        // ignore
+      }
+    }
+
     async function fetchFeatured() {
       try {
         const res = await api.get('/services?limit=6');
         if (res.success && res.data) {
           setFeaturedServices(res.data);
+          if (typeof window !== 'undefined') {
+            sessionStorage.setItem('fixmate_cached_featured', JSON.stringify(res.data));
+          }
         }
       } catch (err) {
         console.error('Failed to load featured services', err);

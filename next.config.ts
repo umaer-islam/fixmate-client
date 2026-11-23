@@ -10,6 +10,20 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  async redirects() {
+    return [
+      {
+        source: '/payment-success',
+        destination: '/payment/success',
+        permanent: false,
+      },
+      {
+        source: '/payment-cancelled',
+        destination: '/payment/cancel',
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
